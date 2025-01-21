@@ -13,16 +13,16 @@ data class TugasResponse (
 @Serializable
 data class tugas (
     @SerialName("id_tugas")
-    val idTugas: Long,
+    val idTugas: Int,
 
     @SerialName("id_proyek")
-    val idProyek: Long,
+    val idProyek: Int,
 
     @SerialName("nama_proyek")
     val namaProyek: String,
 
     @SerialName("id_tim")
-    val idTim: Long,
+    val idTim: Int,
 
     @SerialName("nama_tim")
     val namaTim: String,
