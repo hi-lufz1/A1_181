@@ -10,6 +10,13 @@ data class ProyekResponse (
 )
 
 @Serializable
+data class ProyekResponseDetail (
+    val status: Boolean,
+    val message: String,
+    val data: dataProyek
+)
+
+@Serializable
 data class dataProyek (
     @SerialName("id_proyek")
     val idProyek: Int,
