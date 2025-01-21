@@ -7,11 +7,11 @@ import kotlinx.serialization.Serializable
 data class AnggotaResponse (
     val status: Boolean,
     val message: String,
-    val data: List<Datum>
+    val data: List<anggota>
 )
 
 @Serializable
-data class Datum (
+data class anggota (
     @SerialName("id_anggota")
     val idAnggota: Int,
 
