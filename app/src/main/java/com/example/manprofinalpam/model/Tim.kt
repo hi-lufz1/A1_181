@@ -9,6 +9,13 @@ data class TimResponse (
 )
 
 @Serializable
+data class TimResponseDetail (
+    val status: Boolean,
+    val message: String,
+    val data: dataTim
+)
+
+@Serializable
 data class dataTim (
     @SerialName("id_tim")
     val idTim: Int,
