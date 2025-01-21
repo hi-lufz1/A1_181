@@ -11,6 +11,13 @@ data class AnggotaResponse (
 )
 
 @Serializable
+data class AnggotaResponseDetail (
+    val status: Boolean,
+    val message: String,
+    val data: dataAnggota
+)
+
+@Serializable
 data class dataAnggota (
     @SerialName("id_anggota")
     val idAnggota: Int,
