@@ -11,6 +11,13 @@ data class TugasResponse (
 )
 
 @Serializable
+data class TugasResponseDetail (
+    val status: Boolean,
+    val message: String,
+    val data: dataTugas
+)
+
+@Serializable
 data class dataTugas (
     @SerialName("id_tugas")
     val idTugas: Int,
