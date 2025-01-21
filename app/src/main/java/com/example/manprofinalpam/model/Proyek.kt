@@ -6,11 +6,11 @@ import kotlinx.serialization.*
 data class ProyekResponse (
     val status: Boolean,
     val message: String,
-    val data: List<Proyek>
+    val data: List<dataProyek>
 )
 
 @Serializable
-data class Proyek (
+data class dataProyek (
     @SerialName("id_proyek")
     val idProyek: Int,
 

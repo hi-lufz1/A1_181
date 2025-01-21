@@ -5,11 +5,11 @@ import kotlinx.serialization.*
 data class TimResponse (
     val status: Boolean,
     val message: String,
-    val data: List<tim>
+    val data: List<dataTim>
 )
 
 @Serializable
-data class tim (
+data class dataTim (
     @SerialName("id_tim")
     val idTim: Int,
 
