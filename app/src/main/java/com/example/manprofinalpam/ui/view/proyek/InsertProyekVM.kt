@@ -42,6 +42,7 @@ data class InsertUiEvent(
     val statusProyek: String = ""
 )
 
+// simpan input form ke dalam entitiy
 fun InsertUiEvent.toPry(): dataProyek = dataProyek(
     idProyek = null,
     namaProyek = namaProyek,
