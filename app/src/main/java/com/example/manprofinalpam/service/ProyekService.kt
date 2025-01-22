@@ -18,18 +18,18 @@ interface ProyekService {
         "Content-Type: application/json"
     )
 
-    @GET(".")
+    @GET("proyek")
     suspend fun getProyek(): ProyekResponse
 
-    @GET("{id_proyek}")
+    @GET("proyek/{id_proyek}")
     suspend fun getProyekById(@Path("id_proyek")idProyek:String): ProyekResponseDetail
 
-    @POST("store")
+    @POST("proyek/store")
     suspend fun insertProyek(@Body proyek: dataProyek)
 
-    @PUT("{id_proyek}")
+    @PUT("proyek/{id_proyek}")
     suspend fun updateProyek(@Path("id_proyek")idProyek:String, @Body proyek: dataProyek)
 
-    @DELETE("{id_proyek}")
+    @DELETE("proyek/{id_proyek}")
     suspend fun deleteProyek(@Path("id_proyek")idProyek:String): Response<Void>
 }

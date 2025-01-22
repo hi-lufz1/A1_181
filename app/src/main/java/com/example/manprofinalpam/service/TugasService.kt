@@ -18,18 +18,18 @@ interface TugasService {
         "Content-Type: application/json"
     )
 
-    @GET(".")
+    @GET("tugas")
     suspend fun getTugas(): TugasResponse
 
-    @GET("{id_tugas}")
+    @GET("tugas/{id_tugas}")
     suspend fun getTugasById(@Path("id_tugas") idTugas: String): TugasResponseDetail
 
-    @POST("store")
+    @POST("tugas/store")
     suspend fun insertTugas(@Body tugas: dataTugas)
 
-    @PUT("{id_tugas}")
+    @PUT("tugas/{id_tugas}")
     suspend fun updateTugas(@Path("id_tugas") idTugas: String, @Body tugas: dataTugas)
 
-    @DELETE("{id_tugas}")
+    @DELETE("tugas/{id_tugas}")
     suspend fun deleteTugas(@Path("id_tugas") idTugas: String): Response<Void>
 }

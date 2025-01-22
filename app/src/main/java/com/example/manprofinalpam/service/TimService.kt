@@ -18,18 +18,18 @@ interface TimService {
         "Content-Type: application/json"
     )
 
-    @GET(".")
+    @GET("tim")
     suspend fun getTim(): TimResponse
 
-    @GET("{id_tim}")
+    @GET("tim/{id_tim}")
     suspend fun getTimById(@Path("id_tim") idTim: String): TimResponseDetail
 
-    @POST("store")
+    @POST("tim/store")
     suspend fun insertTim(@Body tim: dataTim)
 
-    @PUT("{id_tim}")
+    @PUT("tim/{id_tim}")
     suspend fun updateTim(@Path("id_tim") idTim: String, @Body tim: dataTim)
 
-    @DELETE("{id_tim}")
+    @DELETE("tim/{id_tim}")
     suspend fun deleteTim(@Path("id_tim") idTim: String): Response<Void>
 }

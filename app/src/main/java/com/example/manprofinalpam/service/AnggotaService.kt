@@ -18,18 +18,18 @@ interface AnggotaService {
         "Content-Type: application/json"
     )
 
-    @GET(".")
+    @GET("anggota")
     suspend fun getAnggota(): AnggotaResponse
 
-    @GET("{id_anggota}")
+    @GET("anggota/{id_anggota}")
     suspend fun getAnggotaById(@Path("id_anggota")idAnggota:String):AnggotaResponseDetail
 
-    @POST("store")
+    @POST("anggota/store")
     suspend fun insertAnggota(@Body anggota: dataAnggota)
 
-    @PUT("{id_anggota}")
+    @PUT("anggota/{id_anggota}")
     suspend fun updateAnggota(@Path("id_anggota")idAnggota:String, @Body anggota: dataAnggota )
 
-    @DELETE("{id_anggota}")
+    @DELETE("anggota/{id_anggota}")
     suspend fun deleteAnggota(@Path("id_anggota")idAnggota:String): Response<Void>
 }
