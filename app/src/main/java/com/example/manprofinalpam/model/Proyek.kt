@@ -19,7 +19,7 @@ data class ProyekResponseDetail (
 @Serializable
 data class dataProyek (
     @SerialName("id_proyek")
-    val idProyek: Int,
+    val idProyek: Int?,
 
     @SerialName("nama_proyek")
     val namaProyek: String,
