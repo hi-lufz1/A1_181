@@ -23,19 +23,17 @@ class DetailProyekVM(
 
     var detailUiState by mutableStateOf<DetailUiState>(DetailUiState.Loading)
         private set
+    private val _idProyek: String = checkNotNull(savedStateHandle[DestinasiDetailPry.idPry])
 
     init {
-        val idProyek = savedStateHandle.get<String>("idProyek")
-        idProyek?.let {
-            getProyekDetail(it)
-        }
+        getProyekDetail()
     }
 
-    fun getProyekDetail(idProyek: String) {
+    fun getProyekDetail() {
         viewModelScope.launch {
             detailUiState = DetailUiState.Loading
             try {
-                val proyek = repository.getProyekByID(idProyek).data
+                val proyek = repository.getProyekByID(_idProyek).data
                 detailUiState = DetailUiState.Success(proyek)
             } catch (e: Exception) {
                 detailUiState = DetailUiState.Error
