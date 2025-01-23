@@ -1,5 +1,6 @@
 package com.example.manprofinalpam.ui.viewmodel.proyek
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -42,7 +43,9 @@ class InsertProyekVM(private val pry: ProyekRepository) : ViewModel() {
                 try {
                     pry.insertProyek(uiEvent.insertUiEvent.toPry())
                     formState = FormState.Success("Proyek berhasil disimpan")
+                    Log.d("DEBUG", "Menyimpan proyek")
                 } catch (e: Exception) {
+                    Log.e("DEBUG", "Gagal menyimpan proyek: ${e.message}")
                     formState = FormState.Error("Proyek gagal disimpan: ${e.message}")
                 }
             }
@@ -99,11 +102,15 @@ data class FormErrorState(
 }
 
 // Simpan input form ke dalam entitiy
-fun InsertUiEvent.toPry(): dataProyek = dataProyek(
-    idProyek = null,
-    namaProyek = namaProyek,
-    deskripsiProyek = deskripsiProyek,
-    tanggalMulai = tanggalMulai,
-    tanggalBerakhir = tanggalBerakhir,
-    statusProyek = statusProyek
-)
+fun InsertUiEvent.toPry(): dataProyek {
+    Log.d("DEBUG", "Data proyek yang dikirim: $this")
+    return dataProyek(
+        idProyek = null,
+        namaProyek = namaProyek,
+        deskripsiProyek = deskripsiProyek,
+        tanggalMulai = tanggalMulai,
+        tanggalBerakhir = tanggalBerakhir,
+        statusProyek = statusProyek
+    )
+}
+
