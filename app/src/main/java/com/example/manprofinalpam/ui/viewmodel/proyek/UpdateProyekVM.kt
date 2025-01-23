@@ -1,4 +1,4 @@
-package com.example.manprofinalpam.ui.view.proyek
+package com.example.manprofinalpam.ui.viewmodel.proyek
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

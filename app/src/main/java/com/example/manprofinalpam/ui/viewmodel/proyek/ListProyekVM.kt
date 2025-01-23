@@ -1,4 +1,4 @@
-package com.example.manprofinalpam.ui.view.proyek
+package com.example.manprofinalpam.ui.viewmodel.proyek
 
 import android.net.http.HttpException
 import android.os.Build

@@ -1,4 +1,4 @@
-package com.example.manprofinalpam.ui.view.tugas
+package com.example.manprofinalpam.ui.viewmodel.tugas
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
