@@ -11,7 +11,7 @@ import com.example.manprofinalpam.repository.ProyekRepository
 import kotlinx.coroutines.launch
 
 
-class UpdateViewModel(
+class UpdateProyekVM(
     savedStateHandle: SavedStateHandle,
     private val repository: ProyekRepository,
 ) : ViewModel() {
