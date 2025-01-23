@@ -18,19 +18,18 @@ class UpdateProyekVM(
 
     var uiState by mutableStateOf(UpdateUiState())
         private set
-    
+
+    private val _idProyek: String = checkNotNull(savedStateHandle[DestinasiUpdatePry.idPry])
+
     init {
-        val idProyek = savedStateHandle.get<String>("idProyek")
-        idProyek?.let {
-            loadProyek(it)
-        }
+       loadProyek()
     }
 
     // Memuat data proyek berdasarkan idProyek
-    fun loadProyek(idProyek: String) {
+    fun loadProyek() {
         viewModelScope.launch {
             try {
-                val proyek = repository.getProyekByID(idProyek)
+                val proyek = repository.getProyekByID(_idProyek)
                 uiState = uiState.copy(
                     idProyek = proyek.data.idProyek,
                     namaProyek = proyek.data.namaProyek,
