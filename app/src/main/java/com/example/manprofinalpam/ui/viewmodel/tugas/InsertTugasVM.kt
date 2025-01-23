@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.manprofinalpam.model.dataTugas
 import com.example.manprofinalpam.repository.TugasRepository
+import com.example.manprofinalpam.ui.navigasi.DesInsertTgs
 import kotlinx.coroutines.launch
 
 class InsertTugasVM(
@@ -19,7 +20,7 @@ class InsertTugasVM(
     var formState: FormState by mutableStateOf(FormState.Idle)
         private set
 
-    private val _idProyek: String = checkNotNull(savedStateHandle[DestinasiInsertTgs.idPry])
+    private val _idProyek: String = checkNotNull(savedStateHandle[DesInsertTgs.idPry])
 
     // Memperbarui state berdasarkan input pengguna
     fun updateInsertTugasState(insertUiEvent: InsertUiEvent) {

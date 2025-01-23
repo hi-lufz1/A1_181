@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.manprofinalpam.model.dataProyek
 import com.example.manprofinalpam.repository.ProyekRepository
+import com.example.manprofinalpam.ui.navigasi.DesDetailPry
 import kotlinx.coroutines.launch
 
 sealed class DetailUiState {
@@ -23,7 +24,7 @@ class DetailProyekVM(
 
     var detailUiState by mutableStateOf<DetailUiState>(DetailUiState.Loading)
         private set
-    private val _idProyek: String = checkNotNull(savedStateHandle[DestinasiDetailPry.idPry])
+    private val _idProyek: String = checkNotNull(savedStateHandle[DesDetailPry.idPry])
 
     init {
         getProyekDetail()

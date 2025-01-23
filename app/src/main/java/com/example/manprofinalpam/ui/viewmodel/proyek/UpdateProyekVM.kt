@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.manprofinalpam.model.dataProyek
 import com.example.manprofinalpam.repository.ProyekRepository
+import com.example.manprofinalpam.ui.navigasi.DesUpdatePry
 import kotlinx.coroutines.launch
 
 
@@ -19,7 +20,7 @@ class UpdateProyekVM(
     var uiState by mutableStateOf(UpdateUiState())
         private set
 
-    private val _idProyek: String = checkNotNull(savedStateHandle[DestinasiUpdatePry.idPry])
+    private val _idProyek: String = checkNotNull(savedStateHandle[DesUpdatePry.idPry])
 
     init {
        loadProyek()
