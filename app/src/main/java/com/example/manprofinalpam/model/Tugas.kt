@@ -20,7 +20,7 @@ data class TugasResponseDetail (
 @Serializable
 data class dataTugas (
     @SerialName("id_tugas")
-    val idTugas: Int,
+    val idTugas: Int?,
 
     @SerialName("id_proyek")
     val idProyek: Int,
