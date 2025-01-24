@@ -8,24 +8,31 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.manprofinalpam.model.dataTugas
+import com.example.manprofinalpam.repository.TimRepository
 import com.example.manprofinalpam.repository.TugasRepository
 import com.example.manprofinalpam.ui.navigasi.DesUpdateTgs
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class UpdateTugasVM(
     savedStateHandle: SavedStateHandle,
-    private val repository: TugasRepository
+    private val repository: TugasRepository,
+    private val timRepo: TimRepository
 ) : ViewModel() {
 
     var uiState by mutableStateOf(InsertUiState())
         private set
     var formState: FormState by mutableStateOf(FormState.Idle)
         private set
+    private val _timList = MutableStateFlow<Map<String, Int>>(emptyMap())
+    val timList = _timList.asStateFlow()
 
     private val _idTugas: String = checkNotNull(savedStateHandle[DesUpdateTgs.idTgs])
     private val _idProyek: String = checkNotNull(savedStateHandle[DesUpdateTgs.idPry])
 
     init {
+        getTimList()
         viewModelScope.launch {
             try {
                 val tugas = repository.getTugasByID(_idTugas)
@@ -33,6 +40,25 @@ class UpdateTugasVM(
             } catch (e: Exception) {
                 Log.e("UpdateTugasVM", "Gagal memuat data tugas: ${e.message}")
                 formState = FormState.Error("Gagal memuat data tugas")
+            }
+        }
+    }
+
+    private fun getTimList() {
+        viewModelScope.launch {
+            try {
+                val response = timRepo.getTim()
+                if (response.status) {
+                    // Konversi List<dataTim> ke Map<String, Int>
+                    _timList.value = response.data.associate { it.namaTim to it.idTim }
+                    Log.d("Data","list tim  ${timList.value}") //cek data tim
+                } else {
+                    _timList.value = emptyMap()
+                    formState = FormState.Error("Gagal mengambil daftar tim: ${response.message}")
+                }
+            } catch (e: Exception) {
+                _timList.value = emptyMap()
+                formState = FormState.Error("Terjadi kesalahan: ${e.message}")
             }
         }
     }

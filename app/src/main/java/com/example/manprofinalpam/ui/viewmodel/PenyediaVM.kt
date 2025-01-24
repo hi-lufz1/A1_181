@@ -68,7 +68,8 @@ object PenyediaVM{
         initializer {
             UpdateTugasVM(
                 createSavedStateHandle(),
-                ManageProjectApp().container.tugasRepository
+                ManageProjectApp().container.tugasRepository,
+                ManageProjectApp().container.timRepository
             )
         }
 

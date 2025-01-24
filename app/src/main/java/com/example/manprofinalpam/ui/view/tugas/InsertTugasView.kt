@@ -103,20 +103,22 @@ fun TugasFormInput(
     enabled: Boolean = true,
     teamData: Map<String, Int> // Ditambahkan parameter untuk data tim
 ) {
-    var selectedTeam by remember { mutableStateOf("") } // Nama tim yang dipilih
+    val initialTeam = teamData.entries.firstOrNull { it.value == insertUiEvent.idTim }?.key.orEmpty()
+    var selectedTeam by remember { mutableStateOf(initialTeam) } //tim yang dipilih
 
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        // Komponen Dropdown untuk memilih tim
         TeamSelector(
             teamData = teamData,
+            selectedTeam = selectedTeam, //Kirim nilai awal
             onTeamSelected = { idTim ->
                 onValueChange(insertUiEvent.copy(idTim = idTim))
                 selectedTeam = teamData.entries.firstOrNull { it.value == idTim }?.key ?: ""
             }
         )
+
 
         OutlinedTextField(
             value = insertUiEvent.namaTugas,
@@ -159,21 +161,21 @@ fun TugasFormInput(
 
 @Composable
 fun TeamSelector(
-    teamData: Map<String, Int>, // Nama tim sebagai key, id_tim sebagai value
+    teamData: Map<String, Int>,
+    selectedTeam: String, //parameter untuk nilai awal
     onTeamSelected: (Int) -> Unit
 ) {
-    var selectedTeam by remember { mutableStateOf("") } // Nama tim yang dipilih
-    val teamNames = teamData.keys.toList() // Daftar nama tim dari Map
+    val teamNames = teamData.keys.toList()
 
     DropDownWidget(
-        selectedValue = selectedTeam,
+        selectedValue = selectedTeam, // Tampilkan nilai awal
         options = teamNames,
         label = "Pilih Tim",
         onValueChangeEvent = { selectedName ->
-            selectedTeam = selectedName
-            onTeamSelected(teamData[selectedName] ?: 0) // Ambil id_tim dari nama tim
+            onTeamSelected(teamData[selectedName] ?: 0)
         },
         modifier = Modifier.fillMaxWidth()
     )
 }
+
 
