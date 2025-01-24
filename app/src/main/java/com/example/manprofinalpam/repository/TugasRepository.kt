@@ -16,6 +16,8 @@ interface TugasRepository {
     suspend fun deleteTugas(idTugas: String)
 
     suspend fun getTugasByID(idTugas: String): TugasResponseDetail
+
+    suspend fun getTugasByProyek(idProyek: String): TugasResponse
 }
 
 class NetworkTugasRepository(
@@ -52,5 +54,9 @@ class NetworkTugasRepository(
 
     override suspend fun getTugasByID(idTugas: String): TugasResponseDetail {
         return tugasApiService.getTugasById(idTugas)
+    }
+
+    override suspend fun getTugasByProyek(idProyek: String): TugasResponse {
+        return tugasApiService.getTugasByProyek(idProyek)
     }
 }
