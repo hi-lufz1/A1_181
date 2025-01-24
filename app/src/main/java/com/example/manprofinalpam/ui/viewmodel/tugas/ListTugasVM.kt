@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.manprofinalpam.model.dataTugas
 import com.example.manprofinalpam.repository.TugasRepository
-import com.example.manprofinalpam.ui.navigasi.DesDetailPry
+import com.example.manprofinalpam.ui.navigasi.DesListTgs
 import kotlinx.coroutines.launch
 import java.io.IOException
 

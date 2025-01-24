@@ -25,7 +25,7 @@ interface TugasService {
     suspend fun getTugasById(@Path("id_tugas") idTugas: String): TugasResponseDetail
 
     @GET("tugas/proyek/{id_proyek}")
-    suspend fun getTugasByProyek(@Path("id_Proyek") idProyek: String): TugasResponse
+    suspend fun getTugasByProyek(@Path("id_proyek") idProyek: String): TugasResponse
 
     @POST("tugas/store")
     suspend fun insertTugas(@Body tugas: dataTugas)

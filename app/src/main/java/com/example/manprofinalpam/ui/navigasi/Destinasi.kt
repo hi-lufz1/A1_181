@@ -29,9 +29,17 @@ object DesDetailPry : Destinasi{
     val routesWithArg = "$route/{$idPry}"
 }
 
-object DesInsertTgs : Destinasi{
+object DesInsertTgs : Destinasi {
     override val route = "insertTgs"
     override val titleRes = "Insert Tugas"
     const val idPry = "idPry"
     val routesWithArg = "$route/{$idPry}"
 }
+
+    object DesListTgs : Destinasi{
+        override val route = "lisTgs"
+        override val titleRes = "List Tugas"
+        const val idPry = "idPry"
+        val routesWithArg = "$route/{$idPry}"
+}
+

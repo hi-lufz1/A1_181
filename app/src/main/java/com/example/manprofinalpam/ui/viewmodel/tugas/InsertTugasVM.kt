@@ -6,21 +6,51 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.manprofinalpam.model.dataTim
 import com.example.manprofinalpam.model.dataTugas
+import com.example.manprofinalpam.repository.TimRepository
 import com.example.manprofinalpam.repository.TugasRepository
 import com.example.manprofinalpam.ui.navigasi.DesInsertTgs
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class InsertTugasVM(
     savedStateHandle: SavedStateHandle,
-    private val tugasRepo: TugasRepository
+    private val tugasRepo: TugasRepository,
+    private val timRepo: TimRepository
 ) : ViewModel() {
     var uiEvent: InsertUiState by mutableStateOf(InsertUiState())
         private set
     var formState: FormState by mutableStateOf(FormState.Idle)
         private set
+    private val _timList = MutableStateFlow<List<dataTim>>(emptyList())
+    val timList = _timList.asStateFlow()
 
     private val _idProyek: String = checkNotNull(savedStateHandle[DesInsertTgs.idPry])
+
+    init {
+        getTimList()
+    }
+
+    private fun getTimList() {
+        viewModelScope.launch {
+            try {
+                val response = timRepo.getTim() // Memanggil fungsi repository
+                if (response.status) { // Memastikan status API sukses
+                    _timList.value = response.data // Mengisi StateFlow dengan daftar tim
+                } else {
+                    _timList.value = emptyList()
+                    formState = FormState.Error("Gagal mengambil daftar tim: ${response.message}")
+                }
+            } catch (e: Exception) {
+                _timList.value = emptyList()
+                formState = FormState.Error("Terjadi kesalahan: ${e.message}")
+            }
+        }
+    }
+
+
 
     // Memperbarui state berdasarkan input pengguna
     fun updateInsertTugasState(insertUiEvent: InsertUiEvent) {
