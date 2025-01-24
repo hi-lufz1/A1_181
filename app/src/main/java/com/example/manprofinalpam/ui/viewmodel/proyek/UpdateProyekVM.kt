@@ -8,81 +8,69 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.manprofinalpam.model.dataProyek
 import com.example.manprofinalpam.repository.ProyekRepository
-import com.example.manprofinalpam.ui.navigasi.DesUpdatePry
 import kotlinx.coroutines.launch
-
+import android.util.Log
+import com.example.manprofinalpam.ui.navigasi.DesUpdatePry
 
 class UpdateProyekVM(
     savedStateHandle: SavedStateHandle,
-    private val repository: ProyekRepository,
+    private val repository: ProyekRepository
 ) : ViewModel() {
 
-    var uiState by mutableStateOf(UpdateUiState())
+    var uiState by mutableStateOf(InsertUiState())
+        private set
+    var formState: FormState by mutableStateOf(FormState.Idle)
         private set
 
     private val _idProyek: String = checkNotNull(savedStateHandle[DesUpdatePry.idPry])
 
     init {
-       loadProyek()
-    }
-
-    // Memuat data proyek berdasarkan idProyek
-    fun loadProyek() {
         viewModelScope.launch {
             try {
                 val proyek = repository.getProyekByID(_idProyek)
-                uiState = uiState.copy(
-                    idProyek = proyek.data.idProyek,
-                    namaProyek = proyek.data.namaProyek,
-                    deskripsiProyek = proyek.data.deskripsiProyek,
-                    tanggalMulai = proyek.data.tanggalMulai,
-                    tanggalBerakhir = proyek.data.tanggalBerakhir,
-                    statusProyek = proyek.data.statusProyek
-                )
+                uiState = proyek.data.toUiStatePryUpdate()
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e("UpdateProyekVM", "Gagal memuat data proyek: ${e.message}")
+                formState = FormState.Error("Gagal memuat data proyek")
             }
         }
     }
 
-    fun updateField(fieldName: String, value: String) {
-        uiState = when (fieldName) {
-            "namaProyek" -> uiState.copy(namaProyek = value)
-            "deskripsiProyek" -> uiState.copy(deskripsiProyek = value)
-            "tanggalMulai" -> uiState.copy(tanggalMulai = value)
-            "tanggalBerakhir" -> uiState.copy(tanggalBerakhir = value)
-            "statusProyek" -> uiState.copy(statusProyek = value)
-            else -> uiState
-        }
+    fun updateState(insertUiEvent: InsertUiEvent) {
+        uiState = InsertUiState(
+            insertUiEvent = insertUiEvent
+        )
     }
 
-    fun updateProyek(onSuccess: () -> Unit, onError: () -> Unit) {
-        viewModelScope.launch {
-            try {
-                val proyek = dataProyek(
-                    idProyek = uiState.idProyek,
-                    namaProyek = uiState.namaProyek,
-                    deskripsiProyek = uiState.deskripsiProyek,
-                    tanggalMulai = uiState.tanggalMulai,
-                    tanggalBerakhir = uiState.tanggalBerakhir,
-                    statusProyek = uiState.statusProyek
-                )
-                repository.updateProyek(proyek.idProyek.toString(), proyek)
-                onSuccess()
-            } catch (e: Exception) {
-                e.printStackTrace()
-                onError()
+    fun updateProyek() {
+            viewModelScope.launch {
+                formState = FormState.Loading
+                try {
+                    val proyek = uiState.insertUiEvent.toPry()
+                    repository.updateProyek(_idProyek, proyek)
+                    formState = FormState.Success("Proyek berhasil diperbarui")
+                    Log.d("UpdateProyekVM", "Berhasil memperbarui proyek")
+                } catch (e: Exception) {
+                    Log.e("UpdateProyekVM", "Gagal memperbarui proyek: ${e.message}")
+                    formState = FormState.Error("Proyek gagal diperbarui: ${e.message}")
+                }
             }
-        }
+    }
+
+    fun resetSnackBarMessage() {
+        formState = FormState.Idle
     }
 }
 
 
-data class UpdateUiState(
-    val idProyek: Int? = null,
-    val namaProyek: String = "",
-    val deskripsiProyek: String = "",
-    val tanggalMulai: String = "",
-    val tanggalBerakhir: String = "",
-    val statusProyek: String = ""
-)
+fun dataProyek.toUiStatePryUpdate(): InsertUiState {
+    return InsertUiState(
+        insertUiEvent = InsertUiEvent(
+            namaProyek = namaProyek,
+            deskripsiProyek = deskripsiProyek,
+            tanggalMulai = tanggalMulai,
+            tanggalBerakhir = tanggalBerakhir,
+            statusProyek = statusProyek
+        )
+    )
+}
