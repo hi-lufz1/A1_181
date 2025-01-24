@@ -10,6 +10,7 @@ import com.example.manprofinalpam.ui.viewmodel.proyek.DetailProyekVM
 import com.example.manprofinalpam.ui.viewmodel.proyek.InsertProyekVM
 import com.example.manprofinalpam.ui.viewmodel.proyek.ListProyekVM
 import com.example.manprofinalpam.ui.viewmodel.proyek.UpdateProyekVM
+import com.example.manprofinalpam.ui.viewmodel.tugas.DetailTugasVM
 import com.example.manprofinalpam.ui.viewmodel.tugas.InsertTugasVM
 import com.example.manprofinalpam.ui.viewmodel.tugas.ListTugasVM
 
@@ -55,6 +56,14 @@ object PenyediaVM{
                 ManageProjectApp().container.tugasRepository
             )
         }
+
+        initializer {
+            DetailTugasVM(
+                createSavedStateHandle(),
+                ManageProjectApp().container.tugasRepository
+            )
+        }
+
     }
 }
 fun CreationExtras.ManageProjectApp():ManageProjectApp  =
