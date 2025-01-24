@@ -13,6 +13,7 @@ import com.example.manprofinalpam.ui.viewmodel.proyek.UpdateProyekVM
 import com.example.manprofinalpam.ui.viewmodel.tugas.DetailTugasVM
 import com.example.manprofinalpam.ui.viewmodel.tugas.InsertTugasVM
 import com.example.manprofinalpam.ui.viewmodel.tugas.ListTugasVM
+import com.example.manprofinalpam.ui.viewmodel.tugas.UpdateTugasVM
 
 object PenyediaVM{
     val Factory = viewModelFactory {
@@ -59,6 +60,13 @@ object PenyediaVM{
 
         initializer {
             DetailTugasVM(
+                createSavedStateHandle(),
+                ManageProjectApp().container.tugasRepository
+            )
+        }
+
+        initializer {
+            UpdateTugasVM(
                 createSavedStateHandle(),
                 ManageProjectApp().container.tugasRepository
             )
