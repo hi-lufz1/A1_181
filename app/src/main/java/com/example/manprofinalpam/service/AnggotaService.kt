@@ -22,14 +22,17 @@ interface AnggotaService {
     suspend fun getAnggota(): AnggotaResponse
 
     @GET("anggota/{id_anggota}")
-    suspend fun getAnggotaById(@Path("id_anggota")idAnggota:String):AnggotaResponseDetail
+    suspend fun getAnggotaById(@Path("id_anggota") idAnggota: String): AnggotaResponseDetail
 
     @POST("anggota/store")
     suspend fun insertAnggota(@Body anggota: dataAnggota)
 
     @PUT("anggota/{id_anggota}")
-    suspend fun updateAnggota(@Path("id_anggota")idAnggota:String, @Body anggota: dataAnggota )
+    suspend fun updateAnggota(@Path("id_anggota") idAnggota: String, @Body anggota: dataAnggota)
 
     @DELETE("anggota/{id_anggota}")
-    suspend fun deleteAnggota(@Path("id_anggota")idAnggota:String): Response<Void>
+    suspend fun deleteAnggota(@Path("id_anggota") idAnggota: String): Response<Void>
+
+    @PUT("anggota/fromtim/{id_anggota}")
+    suspend fun deleteAnggotaFromTim(@Path("id_anggota") idAnggota: String)
 }

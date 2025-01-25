@@ -17,6 +17,8 @@ interface AnggotaRepository {
     suspend fun deleteAnggota(idAnggota: String)
 
     suspend fun getAnggotaByID(idAnggota: String): AnggotaResponseDetail
+
+    suspend fun deleteAnggotaFromTim(idAnggota: String)
 }
 
 class NetworkAnggotaRepository(
@@ -53,5 +55,9 @@ class NetworkAnggotaRepository(
 
     override suspend fun getAnggotaByID(idAnggota: String): AnggotaResponseDetail {
         return anggotaApiService.getAnggotaById(idAnggota)
+    }
+
+    override suspend fun deleteAnggotaFromTim(idAnggota: String) {
+        return anggotaApiService.deleteAnggotaFromTim(idAnggota)
     }
 }
