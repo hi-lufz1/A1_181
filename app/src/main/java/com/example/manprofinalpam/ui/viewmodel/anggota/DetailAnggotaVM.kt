@@ -41,4 +41,15 @@ class DetailAnggotaVM(
             }
         }
     }
+
+    fun delAnggotaFromTim() {
+        viewModelScope.launch {
+            try {
+                repository.deleteAnggotaFromTim(_idAnggota)
+            } catch (e: Exception) {
+                DetailUiState.Error
+            }
+        }
+    }
+
 }
