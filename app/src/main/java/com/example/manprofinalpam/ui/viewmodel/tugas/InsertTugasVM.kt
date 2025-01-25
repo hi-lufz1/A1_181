@@ -26,7 +26,7 @@ class InsertTugasVM(
         private set
     var formState: FormState by mutableStateOf(FormState.Idle)
         private set
-    private val _timList = MutableStateFlow<Map<String, Int>>(emptyMap())
+    private val _timList = MutableStateFlow<Map<String, Int?>>(emptyMap())
     val timList = _timList.asStateFlow()
 
     private val _idProyek: String = checkNotNull(savedStateHandle[DesInsertTgs.idPry])

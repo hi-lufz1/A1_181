@@ -20,7 +20,7 @@ data class AnggotaResponseDetail (
 @Serializable
 data class dataAnggota (
     @SerialName("id_anggota")
-    val idAnggota: Int,
+    val idAnggota: Int?,
 
     @SerialName("id_tim")
     val idTim: Int,
