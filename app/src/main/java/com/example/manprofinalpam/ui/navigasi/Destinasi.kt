@@ -54,6 +54,5 @@ object DesUpdateTgs : Destinasi {
     override val route = "editTgs"
     override val titleRes = "Edit Tugas"
     const val idTgs = "idTgs"
-    const val idPry = "idPry"
     val routesWithArg = "$route/{$idTgs}"
 }

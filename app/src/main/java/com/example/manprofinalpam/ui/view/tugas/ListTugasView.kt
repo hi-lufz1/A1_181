@@ -33,6 +33,7 @@ fun TugasScreen(
     navigateToItemEntry: () -> Unit = {},
     modifier: Modifier = Modifier,
     onEditClick: (String) -> Unit = {},
+    onDetailClick: (String) -> Unit = {},
     viewModel: ListTugasVM = viewModel(factory = PenyediaVM.Factory)
 ) {
     Scaffold(
@@ -65,7 +66,8 @@ fun TugasScreen(
             onDeleteClick = {
                 viewModel.deleteTgs(it.idTugas.toString())
                 viewModel.getTgs()
-            }
+            },
+            onDetailClick = onDetailClick
         )
     }
 }
@@ -76,6 +78,7 @@ fun TugasStatus(
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
     onDeleteClick: (dataTugas) -> Unit,
+    onDetailClick: (String) -> Unit,
     onEditClick: (String) -> Unit
 ) {
     var tugasToDelete by remember { mutableStateOf<dataTugas?>(null) }
@@ -91,7 +94,8 @@ fun TugasStatus(
                 tugas = uiState.tugas,
                 modifier = modifier,
                 onEditClick = { onEditClick(it.idTugas.toString()) },
-                onDeleteClick = { tugasToDelete = it }
+                onDeleteClick = { tugasToDelete = it },
+                onDetailClick = {onDetailClick(it.idTugas.toString())}
             )
         }
 
@@ -114,6 +118,7 @@ fun TugasLayout(
     tugas: List<dataTugas>,
     modifier: Modifier = Modifier,
     onEditClick: (dataTugas) -> Unit,
+    onDetailClick: (dataTugas) -> Unit,
     onDeleteClick: (dataTugas) -> Unit
 ) {
     LazyColumn(
@@ -126,7 +131,7 @@ fun TugasLayout(
                 tugas = item,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { },
+                    .clickable { onDetailClick(item) },
                 onDeleteClick = { onDeleteClick(item) },
                 onEditClick = { onEditClick(item) }
             )
@@ -156,10 +161,14 @@ fun TugasCard(
             ) {
                 Text(
                     text = tugas.namaTugas,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.weight(0.8f)
                 )
                 IconButton(onClick = { onEditClick(tugas) }) {
-                    Icon(imageVector = Icons.Default.Edit, contentDescription = null)
+                    Icon(
+                        imageVector = Icons.Default.Edit, contentDescription = null,
+                        modifier = Modifier.weight(0.2f)
+                    )
                 }
             }
             Row(
@@ -167,9 +176,15 @@ fun TugasCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = tugas.deskripsiTugas, style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    text = tugas.deskripsiTugas, style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.weight(0.8f)
+                )
                 IconButton(onClick = { onDeleteClick(tugas) }) {
-                    Icon(imageVector = Icons.Default.Delete, contentDescription = null)
+                    Icon(
+                        imageVector = Icons.Default.Delete, contentDescription = null,
+                        modifier = Modifier.weight(0.2f)
+                    )
                 }
             }
         }

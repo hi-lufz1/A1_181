@@ -142,7 +142,7 @@ fun ProyekLayout(
                     .fillMaxWidth()
                     .clickable { onDetailClick(item) },
                 onDeleteClick = { onDeleteClick(item) },
-                onEditClick = {onEditClick(item)}
+                onEditClick = { onEditClick(item) }
             )
         }
     }
@@ -173,8 +173,11 @@ fun ProyekCard(
                     text = proyek.namaProyek,
                     style = MaterialTheme.typography.titleLarge
                 )
-                IconButton(onClick = {onEditClick(proyek)}) {
-                    Icon(imageVector = Icons.Default.Edit, contentDescription = null)
+                IconButton(onClick = { onEditClick(proyek) }) {
+                    Icon(
+                        imageVector = Icons.Default.Edit, contentDescription = null,
+                        modifier = Modifier.weight(0.8f)
+                    )
                 }
             }
             Row(
@@ -190,7 +193,10 @@ fun ProyekCard(
                     )
                 }
                 IconButton(onClick = { onDeleteClick(proyek) }) {
-                    Icon(imageVector = Icons.Default.Delete, contentDescription = null)
+                    Icon(
+                        imageVector = Icons.Default.Delete, contentDescription = null,
+                        modifier = Modifier.weight(0.2f)
+                    )
                 }
             }
         }

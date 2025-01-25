@@ -87,8 +87,14 @@ fun PengelolaHalaman(
         ) {
             val idPry = it.arguments?.getString(DesListTgs.idPry)
             idPry?.let { id ->
-               TugasScreen(
-                    modifier = modifier
+                TugasScreen(
+                    modifier = modifier,
+                    onEditClick = {
+                        navController.navigate("${DesListTgs.route}/$id")
+                        println("PengelolaHalaman: ID = $id")
+                    },
+
+
                 )
             }
         }

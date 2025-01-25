@@ -29,7 +29,7 @@ class UpdateTugasVM(
     val timList = _timList.asStateFlow()
 
     private val _idTugas: String = checkNotNull(savedStateHandle[DesUpdateTgs.idTgs])
-    private val _idProyek: String = checkNotNull(savedStateHandle[DesUpdateTgs.idPry])
+    private var _idProyek: Int = 0
 
     init {
         getTimList()
@@ -37,6 +37,7 @@ class UpdateTugasVM(
             try {
                 val tugas = repository.getTugasByID(_idTugas)
                 uiState = tugas.data.toUiStateTgsUpdate()
+                _idProyek = tugas.data.idProyek
             } catch (e: Exception) {
                 Log.e("UpdateTugasVM", "Gagal memuat data tugas: ${e.message}")
                 formState = FormState.Error("Gagal memuat data tugas")
@@ -73,7 +74,7 @@ class UpdateTugasVM(
         viewModelScope.launch {
             formState = FormState.Loading
             try {
-                val tugas = uiState.insertUiEvent.toTugas(_idProyek.toInt())
+                val tugas = uiState.insertUiEvent.toTugas(_idProyek)
                 repository.updateTugas(_idTugas, tugas)
                 formState = FormState.Success("Tugas berhasil diperbarui")
                 Log.d("UpdateTugasVM", "Berhasil memperbarui tugas")
