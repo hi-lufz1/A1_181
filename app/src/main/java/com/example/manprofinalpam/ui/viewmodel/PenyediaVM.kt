@@ -6,6 +6,10 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.manprofinalpam.ManageProjectApp
+import com.example.manprofinalpam.ui.viewmodel.anggota.DetailAnggotaVM
+import com.example.manprofinalpam.ui.viewmodel.anggota.InsertAnggotaVM
+import com.example.manprofinalpam.ui.viewmodel.anggota.ListAnggotaVM
+import com.example.manprofinalpam.ui.viewmodel.anggota.UpdateAnggotaVM
 import com.example.manprofinalpam.ui.viewmodel.proyek.DetailProyekVM
 import com.example.manprofinalpam.ui.viewmodel.proyek.InsertProyekVM
 import com.example.manprofinalpam.ui.viewmodel.proyek.ListProyekVM
@@ -18,7 +22,7 @@ import com.example.manprofinalpam.ui.viewmodel.tugas.InsertTugasVM
 import com.example.manprofinalpam.ui.viewmodel.tugas.ListTugasVM
 import com.example.manprofinalpam.ui.viewmodel.tugas.UpdateTugasVM
 
-object PenyediaVM{
+object PenyediaVM {
     val Factory = viewModelFactory {
 
         //Proyek
@@ -107,7 +111,37 @@ object PenyediaVM{
             )
         }
 
+        //Anggota
+        initializer {
+            InsertAnggotaVM(
+                ManageProjectApp().container.anggotaRepository,
+                ManageProjectApp().container.timRepository
+            )
+        }
+
+        initializer {
+            ListAnggotaVM(
+                ManageProjectApp().container.anggotaRepository
+            )
+        }
+
+        initializer {
+            DetailAnggotaVM(
+                createSavedStateHandle(),
+                ManageProjectApp().container.anggotaRepository
+            )
+        }
+
+        initializer {
+            UpdateAnggotaVM(
+                createSavedStateHandle(),
+                ManageProjectApp().container.anggotaRepository,
+                ManageProjectApp().container.timRepository
+            )
+        }
+
     }
 }
-fun CreationExtras.ManageProjectApp():ManageProjectApp  =
+
+fun CreationExtras.ManageProjectApp(): ManageProjectApp =
     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as ManageProjectApp)
