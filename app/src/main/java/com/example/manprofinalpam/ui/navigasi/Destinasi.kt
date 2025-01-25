@@ -5,6 +5,7 @@ interface Destinasi {
     val titleRes: String
 }
 
+// Proyek
 object DesListPry : Destinasi {
     override val route = "listPry"
     override val titleRes = "List Proyek"
@@ -29,6 +30,8 @@ object DesDetailPry : Destinasi {
     val routesWithArg = "$route/{$idPry}"
 }
 
+
+//Tugas
 object DesInsertTgs : Destinasi {
     override val route = "insertTgs"
     override val titleRes = "Insert Tugas"
@@ -55,4 +58,30 @@ object DesUpdateTgs : Destinasi {
     override val titleRes = "Edit Tugas"
     const val idTgs = "idTgs"
     val routesWithArg = "$route/{$idTgs}"
+}
+
+
+//Tim
+object DesListTim : Destinasi {
+    override val route = "listTim"
+    override val titleRes = "List Tim"
+}
+
+object DesInsertTim : Destinasi {
+    override val route = "insertTim"
+    override val titleRes = "Insert Tim"
+}
+
+object DesUpdateTim : Destinasi {
+    override val route = "editTim"
+    override val titleRes = "Edit Tim"
+    const val idTim = "idTim"
+    val routesWithArg = "$route/{$idTim}"
+}
+
+object DesDetailTim : Destinasi {
+    override val route = "detailTim"
+    override val titleRes = "Detail Tim"
+    const val idTim = "idTim"
+    val routesWithArg = "$route/{$idTim}"
 }

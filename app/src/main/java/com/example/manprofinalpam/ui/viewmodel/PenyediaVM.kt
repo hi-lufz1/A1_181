@@ -12,6 +12,7 @@ import com.example.manprofinalpam.ui.viewmodel.proyek.ListProyekVM
 import com.example.manprofinalpam.ui.viewmodel.proyek.UpdateProyekVM
 import com.example.manprofinalpam.ui.viewmodel.tim.DetailTimVM
 import com.example.manprofinalpam.ui.viewmodel.tim.ListTimVM
+import com.example.manprofinalpam.ui.viewmodel.tim.UpdateTimVM
 import com.example.manprofinalpam.ui.viewmodel.tugas.DetailTugasVM
 import com.example.manprofinalpam.ui.viewmodel.tugas.InsertTugasVM
 import com.example.manprofinalpam.ui.viewmodel.tugas.ListTugasVM
@@ -19,6 +20,8 @@ import com.example.manprofinalpam.ui.viewmodel.tugas.UpdateTugasVM
 
 object PenyediaVM{
     val Factory = viewModelFactory {
+
+        //Proyek
         initializer {
             InsertProyekVM(
                 ManageProjectApp().container.proyekRepository
@@ -45,6 +48,7 @@ object PenyediaVM{
             )
         }
 
+        //Tugas
         initializer {
             InsertTugasVM(
                 createSavedStateHandle(),
@@ -75,6 +79,8 @@ object PenyediaVM{
             )
         }
 
+
+        //Tim
         initializer {
             DetailTimVM(
                 createSavedStateHandle(),
@@ -83,6 +89,20 @@ object PenyediaVM{
         }
         initializer {
             ListTimVM(
+                ManageProjectApp().container.timRepository
+            )
+        }
+
+        initializer {
+            DetailTimVM(
+                createSavedStateHandle(),
+                ManageProjectApp().container.timRepository
+            )
+        }
+
+        initializer {
+            UpdateTimVM(
+                createSavedStateHandle(),
                 ManageProjectApp().container.timRepository
             )
         }
