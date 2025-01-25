@@ -85,3 +85,29 @@ object DesDetailTim : Destinasi {
     const val idTim = "idTim"
     val routesWithArg = "$route/{$idTim}"
 }
+
+
+//Anggota
+object DesListAgt : Destinasi {
+    override val route = "listAgt"
+    override val titleRes = "List Anggota"
+}
+
+object DesInsertAgt : Destinasi {
+    override val route = "insertAgt"
+    override val titleRes = "Insert Anggota"
+}
+
+object DesUpdateAgt : Destinasi {
+    override val route = "editAgt"
+    override val titleRes = "Edit Anggota"
+    const val idAgt = "idAgt"
+    val routesWithArg = "$route/{$idAgt}"
+}
+
+object DesDetailAgt : Destinasi {
+    override val route = "detailAgt"
+    override val titleRes = "Detail Anggota"
+    const val idAgt = "idAgt"
+    val routesWithArg = "$route/{$idAgt}"
+}
