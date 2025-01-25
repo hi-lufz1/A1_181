@@ -10,6 +10,8 @@ import com.example.manprofinalpam.ui.viewmodel.proyek.DetailProyekVM
 import com.example.manprofinalpam.ui.viewmodel.proyek.InsertProyekVM
 import com.example.manprofinalpam.ui.viewmodel.proyek.ListProyekVM
 import com.example.manprofinalpam.ui.viewmodel.proyek.UpdateProyekVM
+import com.example.manprofinalpam.ui.viewmodel.tim.DetailTimVM
+import com.example.manprofinalpam.ui.viewmodel.tim.ListTimVM
 import com.example.manprofinalpam.ui.viewmodel.tugas.DetailTugasVM
 import com.example.manprofinalpam.ui.viewmodel.tugas.InsertTugasVM
 import com.example.manprofinalpam.ui.viewmodel.tugas.ListTugasVM
@@ -69,6 +71,18 @@ object PenyediaVM{
             UpdateTugasVM(
                 createSavedStateHandle(),
                 ManageProjectApp().container.tugasRepository,
+                ManageProjectApp().container.timRepository
+            )
+        }
+
+        initializer {
+            DetailTimVM(
+                createSavedStateHandle(),
+                ManageProjectApp().container.timRepository
+            )
+        }
+        initializer {
+            ListTimVM(
                 ManageProjectApp().container.timRepository
             )
         }
