@@ -19,30 +19,37 @@ import com.example.manprofinalpam.ui.viewmodel.proyek.DetailUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@Preview
 fun DetailProyekScreen(
     modifier: Modifier = Modifier,
     viewModel: DetailProyekVM = viewModel(factory = PenyediaVM.Factory),
     navigateBack: () -> Unit = {},
-    onEditClick: () -> Unit = {}
+    onEditClick: (String) -> Unit = {},
+    onReadTugas: (String) -> Unit,
+    onAddTugas: (String) -> Unit
 ) {
     Scaffold(
         modifier = modifier,
         topBar = {
-           TopAppBar(
-                title ={ DesDetailPry.titleRes}
+            TopAppBar(
+                title = { DesDetailPry.titleRes }
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = onEditClick ,
-                shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.padding(17.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = "Edit"
-                )
+            if (viewModel.detailUiState is DetailUiState.Success) {
+                FloatingActionButton(
+                    onClick = {
+                        val idProyek =
+                            (viewModel.detailUiState as DetailUiState.Success).proyek.idProyek.toString()
+                        onEditClick(idProyek)
+                    },
+                    shape = MaterialTheme.shapes.medium,
+                    modifier = Modifier.padding(17.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Edit"
+                    )
+                }
             }
         },
     ) { innerPadding ->
@@ -55,11 +62,28 @@ fun DetailProyekScreen(
                 is DetailUiState.Loading -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Start))
                 }
+
                 is DetailUiState.Error -> {
                     Text("Error saat memuat data", modifier = Modifier.align(Alignment.Start))
                 }
+
                 is DetailUiState.Success -> {
-                    ItemDetailProyek(proyek = state.proyek)
+                    val proyek = state.proyek
+                    ItemDetailProyek(proyek = proyek)
+                    Button(
+                        onClick = { onReadTugas(proyek.idProyek.toString()) },
+                        shape = MaterialTheme.shapes.small,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Lihat Tugas")
+                    }
+                    Button(
+                        onClick = { onAddTugas(proyek.idProyek.toString()) },
+                        shape = MaterialTheme.shapes.small,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Tambah Tugas")
+                    }
                 }
             }
         }

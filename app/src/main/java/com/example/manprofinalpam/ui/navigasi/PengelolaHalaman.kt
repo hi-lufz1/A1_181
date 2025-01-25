@@ -13,6 +13,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.manprofinalpam.ui.view.proyek.DetailProyekScreen
 import com.example.manprofinalpam.ui.view.proyek.ProyekScreen
+import com.example.manprofinalpam.ui.view.proyek.UpdateProyekScreen
+import com.example.manprofinalpam.ui.view.tugas.InsertTugasScreen
+import com.example.manprofinalpam.ui.view.tugas.TugasScreen
 
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
@@ -37,17 +40,68 @@ fun PengelolaHalaman(
                     )
                 },
 
-            )
+                )
         }
         composable(route = DesDetailPry.routesWithArg, arguments = listOf(
-            navArgument(DesDetailPry.idPry){
+            navArgument(DesDetailPry.idPry) {
                 type = NavType.StringType
             }
-        )){
-            val id = it.arguments?.getString(DesDetailPry.idPry)
-            id?.let { id ->
+        )) {
+            val idPry = it.arguments?.getString(DesDetailPry.idPry)
+            idPry?.let { id ->
                 DetailProyekScreen(
                     modifier = modifier,
+                    onEditClick = {
+                        navController.navigate("${DesUpdatePry.route}/$id")
+                        println("PengelolaHalaman: ID = $id")
+                    },
+                    onReadTugas = {
+                        navController.navigate("${DesListTgs.route}/$id")
+                        println("PengelolaHalaman: ID = $id")
+                    },
+                    onAddTugas = {
+                        navController.navigate("${DesInsertTgs.route}/$id")
+                        println("PengelolaHalaman: ID = $id")
+                    },
+                )
+            }
+        }
+        composable(
+            route = DesUpdatePry.routesWithArg, arguments = listOf(
+                navArgument(DesUpdatePry.idPry) {
+                    type = NavType.StringType
+                })
+        ) {
+            val idPry = it.arguments?.getString(DesUpdatePry.idPry)
+            idPry?.let { id ->
+                UpdateProyekScreen(
+                    modifier = modifier
+                )
+            }
+        }
+        composable(
+            route = DesListTgs.routesWithArg, arguments = listOf(
+                navArgument(DesListTgs.idPry) {
+                    type = NavType.StringType
+                })
+        ) {
+            val idPry = it.arguments?.getString(DesListTgs.idPry)
+            idPry?.let { id ->
+               TugasScreen(
+                    modifier = modifier
+                )
+            }
+        }
+        composable(
+            route = DesInsertTgs.routesWithArg, arguments = listOf(
+                navArgument(DesInsertTgs.idPry) {
+                    type = NavType.StringType
+                })
+        ) {
+            val idPry = it.arguments?.getString(DesInsertTgs.idPry)
+            idPry?.let { id ->
+                InsertTugasScreen(
+                    modifier = modifier
                 )
             }
         }
