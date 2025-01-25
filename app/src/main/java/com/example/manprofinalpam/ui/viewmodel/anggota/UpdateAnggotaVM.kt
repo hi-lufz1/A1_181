@@ -1,4 +1,4 @@
-package com.example.manprofinalpam.ui.viewmodel.tugas
+package com.example.manprofinalpam.ui.viewmodel.anggota
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -7,40 +7,39 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.manprofinalpam.model.dataTugas
+import com.example.manprofinalpam.model.dataAnggota
+import com.example.manprofinalpam.repository.AnggotaRepository
 import com.example.manprofinalpam.repository.TimRepository
-import com.example.manprofinalpam.repository.TugasRepository
-import com.example.manprofinalpam.ui.navigasi.DesUpdateTgs
+import com.example.manprofinalpam.ui.navigasi.DesUpdateAgt
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class UpdateTugasVM(
+class UpdateAnggotaVM(
     savedStateHandle: SavedStateHandle,
-    private val repository: TugasRepository,
+    private val repository: AnggotaRepository,
     private val timRepo: TimRepository
 ) : ViewModel() {
 
-    var uiState by mutableStateOf(InsertUiState())
+    var uiState by mutableStateOf(InsertAnggotaUiState())
         private set
     var formState: FormState by mutableStateOf(FormState.Idle)
         private set
     private val _timList = MutableStateFlow<Map<String, Int?>>(emptyMap())
     val timList = _timList.asStateFlow()
 
-    private val _idTugas: String = checkNotNull(savedStateHandle[DesUpdateTgs.idTgs])
-    private var _idProyek: Int = 0
+    private val _idAgt: String = checkNotNull(savedStateHandle[DesUpdateAgt.idAgt])
 
     init {
         getTimList()
         viewModelScope.launch {
+            formState = FormState.Loading
             try {
-                val tugas = repository.getTugasByID(_idTugas)
-                uiState = tugas.data.toUiStateTgsUpdate()
-                _idProyek = tugas.data.idProyek
+                val anggota = repository.getAnggotaByID(_idAgt)
+                uiState = anggota.data.toUiStateAgtUpdate()
             } catch (e: Exception) {
-                Log.e("UpdateTugasVM", "Gagal memuat data tugas: ${e.message}")
-                formState = FormState.Error("Gagal memuat data tugas")
+                Log.e("UpdateAnggotaVM", "Gagal memuat data anggota: ${e.message}")
+                formState = FormState.Error("Gagal memuat data anggota")
             }
         }
     }
@@ -52,7 +51,7 @@ class UpdateTugasVM(
                 if (response.status) {
                     // Konversi List<dataTim> ke Map<String, Int>
                     _timList.value = response.data.associate { it.namaTim to it.idTim }
-                    Log.d("Data","list tim  ${timList.value}") //cek data tim
+                    Log.d("Data", "list tim  ${timList.value}") //cek data tim
                 } else {
                     _timList.value = emptyMap()
                     formState = FormState.Error("Gagal mengambil daftar tim: ${response.message}")
@@ -64,23 +63,23 @@ class UpdateTugasVM(
         }
     }
 
-    fun updateState(insertUiEvent: InsertUiEvent) {
-        uiState = InsertUiState(
-            insertUiEvent = insertUiEvent
+    fun updateState(insertAnggotaUiEvent: InsertAnggotaUiEvent) {
+        uiState = InsertAnggotaUiState(
+            insertAnggotaUiEvent = insertAnggotaUiEvent
         )
     }
 
-    fun updateTugas() {
+    fun updateAnggota() {
         viewModelScope.launch {
             formState = FormState.Loading
             try {
-                val tugas = uiState.insertUiEvent.toTugas(_idProyek)
-                repository.updateTugas(_idTugas, tugas)
-                formState = FormState.Success("Tugas berhasil diperbarui")
-                Log.d("UpdateTugasVM", "Berhasil memperbarui tugas")
+                val anggota = uiState.insertAnggotaUiEvent.toAnggota()
+                repository.updateAnggota(_idAgt, anggota)
+                formState = FormState.Success("Anggota berhasil diperbarui")
+                Log.d("UpdateAnggotaVM", "Berhasil memperbarui anggota")
             } catch (e: Exception) {
-                Log.e("UpdateTugasVM", "Gagal memperbarui tugas: ${e.message}")
-                formState = FormState.Error("Tugas gagal diperbarui: ${e.message}")
+                Log.e("UpdateAnggotaVM", "Gagal memperbarui anggota: ${e.message}")
+                formState = FormState.Error("Gagal memperbarui anggota: ${e.message}")
             }
         }
     }
@@ -91,14 +90,13 @@ class UpdateTugasVM(
 }
 
 
-fun dataTugas.toUiStateTgsUpdate(): InsertUiState {
-    return InsertUiState(
-        insertUiEvent = InsertUiEvent(
+fun dataAnggota.toUiStateAgtUpdate(): InsertAnggotaUiState {
+    return InsertAnggotaUiState(
+        insertAnggotaUiEvent = InsertAnggotaUiEvent(
             idTim = idTim,
-            namaTugas = namaTugas,
-            deskripsiTugas = deskripsiTugas,
-            prioritas = prioritas,
-            statusTugas = statusTugas
+            namaAnggota = namaAnggota,
+            peran = peran
         )
     )
 }
+

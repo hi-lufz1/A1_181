@@ -23,7 +23,7 @@ data class dataAnggota (
     val idAnggota: Int?,
 
     @SerialName("id_tim")
-    val idTim: Int,
+    val idTim: Int?,
 
     @SerialName("nama_tim")
     val namaTim: String,

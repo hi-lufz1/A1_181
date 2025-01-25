@@ -100,7 +100,7 @@ data class InsertAnggotaUiState(
 
 // Data dari form input
 data class InsertAnggotaUiEvent(
-    val idTim: Int = 0,
+    val idTim: Int? = 0,
     val namaAnggota: String = "",
     val peran: String = ""
 )
