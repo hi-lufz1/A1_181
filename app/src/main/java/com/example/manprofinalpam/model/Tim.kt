@@ -18,7 +18,7 @@ data class TimResponseDetail (
 @Serializable
 data class dataTim (
     @SerialName("id_tim")
-    val idTim: Int,
+    val idTim: Int?,
 
     @SerialName("nama_tim")
     val namaTim: String,
