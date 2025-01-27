@@ -16,24 +16,17 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.size.Size
 import com.example.manprofinalpam.R
 import com.example.manprofinalpam.model.dataProyek
 import com.example.manprofinalpam.ui.customwidget.BottomBar
@@ -41,17 +34,16 @@ import com.example.manprofinalpam.ui.customwidget.HomeTopAppBar
 import com.example.manprofinalpam.ui.viewmodel.PenyediaVM
 import com.example.manprofinalpam.ui.viewmodel.proyek.ListProyekUIState
 import com.example.manprofinalpam.ui.viewmodel.proyek.ListProyekVM
-import kotlinx.coroutines.launch
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun ProyekScreen(
     navigateToItemEntry: () -> Unit = {},
     modifier: Modifier = Modifier,
     onDetailClick: (String) -> Unit = {},
-    onEditClick: (String) -> Unit = {},
+    onTim: () -> Unit = {},
+    onAnggota: () -> Unit = {},
     viewModel: ListProyekVM = viewModel(factory = PenyediaVM.Factory)
 ) {
     Scaffold(
@@ -95,7 +87,11 @@ fun ProyekScreen(
             }
         },
         bottomBar = {
-            BottomBar(modifier = modifier)
+            BottomBar(
+                modifier = modifier,
+                onTim = { onTim },
+                onAnggota = { onAnggota },
+            )
         }
     ) { innerPadding ->
         ProyekStatus(
@@ -103,7 +99,6 @@ fun ProyekScreen(
             retryAction = { viewModel.getPry() },
             modifier = Modifier.padding(innerPadding),
             onDetailClick = onDetailClick,
-            onEditlClick = onEditClick,
             onDeleteClick = {
                 viewModel.deletePry(it.idProyek.toString())
                 viewModel.getPry()
@@ -120,7 +115,6 @@ fun ProyekStatus(
     modifier: Modifier = Modifier,
     onDeleteClick: (dataProyek) -> Unit = {},
     onDetailClick: (String) -> Unit,
-    onEditlClick: (String) -> Unit
 ) {
     var proyekToDelete by remember { mutableStateOf<dataProyek?>(null) }
 
@@ -142,7 +136,6 @@ fun ProyekStatus(
                 proyek = uiState.proyek,
                 modifier = modifier,
                 onDetailClick = { onDetailClick(it.idProyek.toString()) },
-                onEditClick = { onEditlClick(it.idProyek.toString()) },
                 onDeleteClick = { proyekToDelete = it }
             )
         }
@@ -167,7 +160,6 @@ fun ProyekLayout(
     proyek: List<dataProyek>,
     modifier: Modifier = Modifier,
     onDetailClick: (dataProyek) -> Unit,
-    onEditClick: (dataProyek) -> Unit,
     onDeleteClick: (dataProyek) -> Unit = {}
 ) {
     LazyColumn(
@@ -181,8 +173,7 @@ fun ProyekLayout(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onDetailClick(item) },
-                onDeleteClick = { onDeleteClick(item) },
-                onEditClick = { onEditClick(item) }
+                onDeleteClick = { onDeleteClick(item) }
             )
         }
     }
@@ -194,7 +185,6 @@ fun ProyekCard(
     proyek: dataProyek,
     modifier: Modifier = Modifier,
     onDeleteClick: (dataProyek) -> Unit = {},
-    onEditClick: (dataProyek) -> Unit = {}
 ) {
     Card(
         modifier = modifier,

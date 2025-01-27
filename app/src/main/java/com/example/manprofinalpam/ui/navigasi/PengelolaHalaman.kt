@@ -41,7 +41,9 @@ fun PengelolaHalaman(
                         "PengelolaHalaman: ID =  $id"
                     )
                 },
-
+                navigateToItemEntry = {navController.navigate(DesInsertPry.route)},
+                onTim = {navController.navigate(DesListTim.route)},
+                onAnggota = {navController.navigate(DesListAgt.route)}
                 )
         }
         composable(route = DesDetailPry.routesWithArg, arguments = listOf(

@@ -32,7 +32,12 @@ import com.example.manprofinalpam.R
 
 @Preview
 @Composable
-fun BottomBar(modifier: Modifier = Modifier) {
+fun BottomBar(
+    modifier: Modifier = Modifier,
+    onProyek: () -> Unit = {},
+    onTim: () -> Unit = {},
+    onAnggota: () -> Unit = {},
+) {
 
     var navNum by remember {
         mutableStateOf(0)
@@ -57,7 +62,7 @@ fun BottomBar(modifier: Modifier = Modifier) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = { onProyek }) {
 
                     Icon(
                         painter = painterResource(id = R.drawable.clipboard_text_fill__streamline_phosphor_fill__1_),
@@ -97,7 +102,7 @@ fun BottomBar(modifier: Modifier = Modifier) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = { onTim }) {
                     Icon(
                         painter = painterResource(id = R.drawable.multiple_neutral_2__streamline_ultimate),
                         contentDescription = "home",
@@ -136,7 +141,7 @@ fun BottomBar(modifier: Modifier = Modifier) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = {onAnggota}) {
                     Icon(
                         painter = painterResource(id = R.drawable.user_filled__streamline_carbon),
                         contentDescription = "home",
@@ -169,8 +174,8 @@ fun BottomBar(modifier: Modifier = Modifier) {
                 )
             }
         }
-            Spacer(modifier = Modifier)
-        }
+        Spacer(modifier = Modifier)
     }
+}
 
 
