@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -15,23 +16,32 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.size.Size
 import com.example.manprofinalpam.R
 import com.example.manprofinalpam.model.dataProyek
+import com.example.manprofinalpam.ui.customwidget.BottomBar
+import com.example.manprofinalpam.ui.customwidget.HomeTopAppBar
 import com.example.manprofinalpam.ui.viewmodel.PenyediaVM
 import com.example.manprofinalpam.ui.viewmodel.proyek.ListProyekUIState
 import com.example.manprofinalpam.ui.viewmodel.proyek.ListProyekVM
+import kotlinx.coroutines.launch
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,23 +57,45 @@ fun ProyekScreen(
     Scaffold(
         modifier = modifier,
         topBar = {
-            TopAppBar(
-                title = { Text("Daftar Proyek") },
-                actions = {
-                    IconButton(onClick = { viewModel.getPry() }) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
-                    }
+            Column {
+                HomeTopAppBar(
+                    title = "Proyek",
+                    onRefreshClick = { viewModel.getPry() },
+                )
+                if (viewModel.pryUIState is ListProyekUIState.Loading) {
+                    LinearProgressIndicator(
+                        color = colorResource(id = R.color.primary),
+                        progress = viewModel.currentProgress,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                } else {
+                    LinearProgressIndicator(
+                        color = colorResource(id = R.color.primary),
+                        progress = 1f, // Indikator tetap penuh setelah loading selesai
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
-            )
+            }
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = navigateToItemEntry,
-                shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.padding(18.dp)
+                shape = CircleShape,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .size(64.dp),
+                containerColor = colorResource(id = R.color.primary),
+                contentColor = Color.White
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Tambah Proyek")
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Tambah Proyek",
+                    modifier = Modifier.size(32.dp, 32.dp)
+                )
             }
+        },
+        bottomBar = {
+            BottomBar(modifier = modifier)
         }
     ) { innerPadding ->
         ProyekStatus(
@@ -80,6 +112,7 @@ fun ProyekScreen(
     }
 }
 
+
 @Composable
 fun ProyekStatus(
     uiState: ListProyekUIState,
@@ -92,7 +125,14 @@ fun ProyekStatus(
     var proyekToDelete by remember { mutableStateOf<dataProyek?>(null) }
 
     when (uiState) {
-        is ListProyekUIState.Loading -> OnLoading(modifier.fillMaxSize())
+        is ListProyekUIState.Loading -> {
+            val isLoadingComplete = false
+            OnLoading(
+                isLoadingComplete = isLoadingComplete,
+                modifier = modifier.fillMaxSize()
+            )
+        }
+
         is ListProyekUIState.Success -> if (uiState.proyek.isEmpty()) {
             Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text("Tidak ada data proyek.")
@@ -159,7 +199,8 @@ fun ProyekCard(
     Card(
         modifier = modifier,
         shape = MaterialTheme.shapes.medium,
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -173,12 +214,12 @@ fun ProyekCard(
                     text = proyek.namaProyek,
                     style = MaterialTheme.typography.titleLarge
                 )
-                IconButton(onClick = { onEditClick(proyek) }) {
-                    Icon(
-                        imageVector = Icons.Default.Edit, contentDescription = null,
-                        modifier = Modifier.weight(0.8f)
-                    )
-                }
+//                IconButton(onClick = { onEditClick(proyek) }) {
+//                    Icon(
+//                        imageVector = Icons.Default.Edit, contentDescription = null,
+//                        modifier = Modifier.weight(0.8f)
+//                    )
+//                }
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -186,9 +227,9 @@ fun ProyekCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column {
-                    Text(text = proyek.deskripsiProyek, style = MaterialTheme.typography.bodyLarge)
+                    Text(text = proyek.statusProyek, style = MaterialTheme.typography.bodyLarge)
                     Text(
-                        text = "ID: ${proyek.idProyek}",
+                        text = "${proyek.tanggalMulai} - ${proyek.tanggalBerakhir}",
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
@@ -204,17 +245,19 @@ fun ProyekCard(
 }
 
 @Composable
-fun OnLoading(modifier: Modifier = Modifier) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
+fun OnLoading(
+    isLoadingComplete: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-//        Image(
-//            painter = painterResource(R.drawable.loading),
-//            contentDescription = stringResource(R.string.loading)
-//        )
+        Text(if (isLoadingComplete) "Loading Complete" else "Loading...")
     }
 }
+
 
 @Composable
 fun OnError(retryAction: () -> Unit, modifier: Modifier = Modifier) {
@@ -241,15 +284,19 @@ fun DeleteConfirmationDialog(
     onDismiss: () -> Unit
 ) {
     AlertDialog(
-        onDismissRequest = onDismiss,
+        onDismissRequest = onDismiss, containerColor = Color.White,
         confirmButton = {
-            Button(onClick = onConfirm) {
-                Text("Hapus")
+            Button(
+                onClick = onConfirm,
+                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.primary))
+            ) {
+                Text("Hapus", color = Color.White)
             }
         },
         dismissButton = {
-            Button(onClick = onDismiss) {
-                Text("Batal")
+            Button(onClick = onDismiss, colors = ButtonDefaults.buttonColors(Color.White)) {
+                Text("Batal", color = colorResource(id = R.color.primary))
+
             }
         },
         title = { Text("Konfirmasi Hapus") },

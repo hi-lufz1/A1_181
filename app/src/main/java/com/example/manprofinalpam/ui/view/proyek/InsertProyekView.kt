@@ -1,6 +1,5 @@
 package com.example.manprofinalpam.ui.view.proyek
 
-import android.app.DatePickerDialog
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -14,25 +13,37 @@ import androidx.annotation.RequiresExtension
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -102,35 +113,7 @@ fun ProyekFormInput(
     onValueChange: (InsertUiEvent) -> Unit = {},
     enabled: Boolean = true
 ) {
-    val context = LocalContext.current
-    val calendar = Calendar.getInstance()
-
-    // Tanggal Mulai
-    val tanggalMulaiPickerDialog = DatePickerDialog(
-        context,
-        { _, year, month, day ->
-            // Format tanggal menjadi yyyy-MM-dd
-            val formattedDate = String.format("%04d-%02d-%02d", year, month + 1, day)
-            onValueChange(insertUiEvent.copy(tanggalMulai = formattedDate))
-        },
-
-        calendar.get(Calendar.YEAR),
-        calendar.get(Calendar.MONTH),
-        calendar.get(Calendar.DAY_OF_MONTH)
-    )
-
-    // Tanggal Berakhir
-    val tanggalBerakhirPickerDialog = DatePickerDialog(
-        context,
-        { _, year, month, day ->
-            // Format tanggalBerakhir menjadi yyyy-MM-dd
-            val formattedEndDate = String.format("%04d-%02d-%02d", year, month + 1, day)
-            onValueChange(insertUiEvent.copy(tanggalBerakhir = formattedEndDate))
-        },
-        calendar.get(Calendar.YEAR),
-        calendar.get(Calendar.MONTH),
-        calendar.get(Calendar.DAY_OF_MONTH)
-    )
+    var showDateRangePicker by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier,
@@ -154,26 +137,47 @@ fun ProyekFormInput(
             enabled = enabled,
             singleLine = false
         )
+
+        // Tanggal Mulai dan Berakhir menggunakan DateRangePicker
         OutlinedTextField(
-            value = insertUiEvent.tanggalMulai,
-            onValueChange = { },
-            label = { Text("Tanggal Mulai") },
+            value = "${insertUiEvent.tanggalMulai} - ${insertUiEvent.tanggalBerakhir}",
+            onValueChange = {},
+            label = { Text("Tanggal Mulai - Tanggal Berakhir") },
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { tanggalMulaiPickerDialog.show() },
-            enabled = false, // Non-editable, hanya menggunakan DatePicker
-            singleLine = true
+                .clickable { showDateRangePicker = true },
+            enabled = false,
+            singleLine = true,
+            colors = TextFieldDefaults.colors(
+                disabledLabelColor = Color.Black,
+                focusedTextColor = Color.Black, // Warna teks saat fokus
+                unfocusedTextColor = Color.Black, // Warna teks saat tidak fokus
+                disabledTextColor = Color.Black, // Warna teks saat disabled
+                focusedIndicatorColor = Color.Blue, // Warna garis bawah saat fokus
+                unfocusedIndicatorColor = Color.Gray, // Warna garis bawah saat tidak fokus
+                disabledIndicatorColor = Color.Gray, // Warna garis bawah saat disabled
+                focusedContainerColor = Color.Transparent, // Warna latar saat fokus
+                unfocusedContainerColor = Color.Transparent, // Warna latar saat tidak fokus
+                disabledContainerColor = Color.Transparent // Warna latar saat disabled
+            )
         )
-        OutlinedTextField(
-            value = insertUiEvent.tanggalBerakhir,
-            onValueChange = { },
-            label = { Text("Tanggal Berakhir") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { tanggalBerakhirPickerDialog.show() },
-            enabled = false, // Non-editable, hanya menggunakan DatePicker
-            singleLine = true
-        )
+
+        if (showDateRangePicker) {
+            DateRangePickerModal(
+                onDateRangeSelected = { dateRange ->
+                    val (startMillis, endMillis) = dateRange
+                    val dateFormat = java.text.SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+                    val startDate = startMillis?.let { dateFormat.format(it) } ?: ""
+                    val endDate = endMillis?.let { dateFormat.format(it) } ?: ""
+
+                    onValueChange(insertUiEvent.copy(tanggalMulai = startDate, tanggalBerakhir = endDate))
+                    showDateRangePicker = false
+                },
+                onDismiss = { showDateRangePicker = false }
+            )
+        }
+
         OutlinedTextField(
             value = insertUiEvent.statusProyek,
             onValueChange = { onValueChange(insertUiEvent.copy(statusProyek = it)) },
@@ -191,9 +195,56 @@ fun ProyekFormInput(
                 color = Color.Red
             )
         }
-        Divider(
+        HorizontalDivider(
             thickness = 5.dp,
             modifier = Modifier.padding(5.dp)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DateRangePickerModal(
+    onDateRangeSelected: (Pair<Long?, Long?>) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val dateRangePickerState = rememberDateRangePickerState()
+
+    DatePickerDialog (
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton (
+                onClick = {
+                    onDateRangeSelected(
+                        Pair(
+                            dateRangePickerState.selectedStartDateMillis,
+                            dateRangePickerState.selectedEndDateMillis
+                        )
+                    )
+                    onDismiss()
+                }
+            ) {
+                Text("OK")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    ) {
+        DateRangePicker(
+            state = dateRangePickerState,
+            title = {
+                Text(
+                    text = "Pilih Rentang Tanggal"
+                )
+            },
+            showModeToggle = false,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(500.dp)
+                .padding(16.dp)
         )
     }
 }

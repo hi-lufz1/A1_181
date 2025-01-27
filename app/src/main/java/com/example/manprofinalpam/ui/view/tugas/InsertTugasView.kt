@@ -73,7 +73,7 @@ fun TugasFormBody(
     onTugasValueChange: (InsertUiEvent) -> Unit = {},
     onSaveClick: () -> Unit,
     modifier: Modifier = Modifier,
-    teamData: Map<String, Int>
+    teamData: Map<String, Int?>
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(18.dp),
@@ -101,7 +101,7 @@ fun TugasFormInput(
     modifier: Modifier = Modifier,
     onValueChange: (InsertUiEvent) -> Unit = {},
     enabled: Boolean = true,
-    teamData: Map<String, Int> // Ditambahkan parameter untuk data tim
+    teamData: Map<String, Int?> // Ditambahkan parameter untuk data tim
 ) {
     val initialTeam = teamData.entries.firstOrNull { it.value == insertUiEvent.idTim }?.key.orEmpty()
     var selectedTeam by remember { mutableStateOf(initialTeam) } //tim yang dipilih
@@ -161,7 +161,7 @@ fun TugasFormInput(
 
 @Composable
 fun TeamSelector(
-    teamData: Map<String, Int>,
+    teamData: Map<String, Int?>,
     selectedTeam: String, //parameter untuk nilai awal
     onTeamSelected: (Int) -> Unit
 ) {

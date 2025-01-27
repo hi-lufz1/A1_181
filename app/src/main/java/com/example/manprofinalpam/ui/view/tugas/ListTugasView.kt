@@ -84,7 +84,13 @@ fun TugasStatus(
     var tugasToDelete by remember { mutableStateOf<dataTugas?>(null) }
 
     when (uiState) {
-        is ListTugasUIState.Loading -> OnLoading(modifier.fillMaxSize())
+        is ListTugasUIState.Loading -> {
+            val isLoadingComplete = false
+            OnLoading(
+                isLoadingComplete = isLoadingComplete,
+                modifier = modifier.fillMaxSize()
+            )
+        }
         is ListTugasUIState.Success -> if (uiState.tugas.isEmpty()) {
             Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text("Tidak ada data tugas.")

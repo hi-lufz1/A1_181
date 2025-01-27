@@ -22,6 +22,7 @@ sealed class ListProyekUIState {
 class ListProyekVM(private val pry: ProyekRepository) : ViewModel() {
     var pryUIState: ListProyekUIState by mutableStateOf(ListProyekUIState.Loading)
         private set
+    var currentProgress by mutableStateOf(0f)
 
     init {
         getPry()
@@ -31,6 +32,11 @@ class ListProyekVM(private val pry: ProyekRepository) : ViewModel() {
         viewModelScope.launch {
             pryUIState = ListProyekUIState.Loading
             try {
+                // Simulate loading delay
+                for (i in 1..50) {
+                    currentProgress = i / 50f
+                    kotlinx.coroutines.delay(10)
+                }
                 val data = pry.getProyek().data
                 pryUIState = ListProyekUIState.Success(data)
             } catch (e: Exception) {
