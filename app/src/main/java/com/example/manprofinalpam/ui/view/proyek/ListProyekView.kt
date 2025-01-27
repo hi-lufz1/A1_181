@@ -3,11 +3,13 @@ package com.example.manprofinalpam.ui.view.proyek
 import android.os.Build
 import androidx.annotation.RequiresExtension
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -218,10 +220,19 @@ fun ProyekCard(
             ) {
                 Column {
                     Text(text = proyek.statusProyek, style = MaterialTheme.typography.bodyLarge)
-                    Text(
-                        text = "${proyek.tanggalMulai} - ${proyek.tanggalBerakhir}",
-                        style = MaterialTheme.typography.bodySmall
-                    )
+                    Row(
+                        modifier = Modifier
+                            .background(
+                                color = colorResource(id = R.color.primary),
+                                shape = RoundedCornerShape(8.dp))
+                            .padding(horizontal = 6.dp)
+                            ) {
+                                Text(
+                                    text = "${proyek.tanggalMulai} - ${proyek.tanggalBerakhir}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = Color.White
+                                )
+                            }
                 }
                 IconButton(onClick = { onDeleteClick(proyek) }) {
                     Icon(

@@ -67,6 +67,7 @@ fun PengelolaHalaman(
                         navController.navigate("${DesInsertTgs.route}/$id")
                         println("PengelolaHalaman: ID = $id")
                     },
+                    navigateBack = {navController.popBackStack()}
                 )
             }
         }

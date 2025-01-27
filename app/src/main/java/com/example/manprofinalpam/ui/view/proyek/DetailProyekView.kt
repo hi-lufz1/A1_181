@@ -1,21 +1,29 @@
 package com.example.manprofinalpam.ui.view.proyek
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.manprofinalpam.R
 import com.example.manprofinalpam.model.dataProyek
+import com.example.manprofinalpam.ui.customwidget.CustomTopBar
 import com.example.manprofinalpam.ui.navigasi.DesDetailPry
 import com.example.manprofinalpam.ui.viewmodel.PenyediaVM
 import com.example.manprofinalpam.ui.viewmodel.proyek.DetailProyekVM
 import com.example.manprofinalpam.ui.viewmodel.proyek.DetailUiState
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,35 +37,28 @@ fun DetailProyekScreen(
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = {
-            TopAppBar(
-                title = { DesDetailPry.titleRes }
-            )
-        },
-        floatingActionButton = {
-            if (viewModel.detailUiState is DetailUiState.Success) {
-                FloatingActionButton(
-                    onClick = {
-                        val idProyek =
-                            (viewModel.detailUiState as DetailUiState.Success).proyek.idProyek.toString()
-                        onEditClick(idProyek)
-                    },
-                    shape = MaterialTheme.shapes.medium,
-                    modifier = Modifier.padding(17.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = "Edit"
-                    )
-                }
-            }
-        },
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
+                .background(color = colorResource(R.color.primary))
         ) {
+            Spacer(
+                Modifier
+                    .height(16.dp)
+                    .background(color = colorResource(id = R.color.primary))
+            )
+            CustomTopBar(title = "Detail Proyek", onEditClick = {
+                val idProyek =
+                    (viewModel.detailUiState as DetailUiState.Success).proyek.idProyek.toString()
+                onEditClick(idProyek)
+            }, onBackClick = navigateBack, isEditEnabled = true)
+            Spacer(
+                Modifier
+                    .height(16.dp)
+                    .background(color = colorResource(R.color.primary))
+            )
             when (val state = viewModel.detailUiState) {
                 is DetailUiState.Loading -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Start))
@@ -69,21 +70,11 @@ fun DetailProyekScreen(
 
                 is DetailUiState.Success -> {
                     val proyek = state.proyek
-                    ItemDetailProyek(proyek = proyek)
-                    Button(
-                        onClick = { onReadTugas(proyek.idProyek.toString()) },
-                        shape = MaterialTheme.shapes.small,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Lihat Tugas")
-                    }
-                    Button(
-                        onClick = { onAddTugas(proyek.idProyek.toString()) },
-                        shape = MaterialTheme.shapes.small,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Tambah Tugas")
-                    }
+                    ItemDetailProyek(
+                        proyek = proyek,
+                        onReadTugas = onReadTugas,
+                        onAddTugas = onAddTugas
+                    )
                 }
             }
         }
@@ -93,46 +84,118 @@ fun DetailProyekScreen(
 @Composable
 fun ItemDetailProyek(
     modifier: Modifier = Modifier,
-    proyek: dataProyek
+    proyek: dataProyek,
+    onReadTugas: (String) -> Unit = {},
+    onAddTugas: (String) -> Unit = {}
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth()
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = (colorResource(id = R.color.primary)))
     ) {
         Column(
-            modifier = modifier.padding(16.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
+                .background(Color.White)
+                .padding(16.dp)
         ) {
-            ComponentDetailProyek(judul = "ID Proyek", isinya = proyek.idProyek.toString())
-            Spacer(modifier = Modifier.padding(5.dp))
-            ComponentDetailProyek(judul = "Nama Proyek", isinya = proyek.namaProyek)
-            Spacer(modifier = Modifier.padding(5.dp))
-            ComponentDetailProyek(judul = "Deskripsi", isinya = proyek.deskripsiProyek)
-            Spacer(modifier = Modifier.padding(5.dp))
-            ComponentDetailProyek(judul = "Tanggal Mulai", isinya = proyek.tanggalMulai)
-            Spacer(modifier = Modifier.padding(5.dp))
-            ComponentDetailProyek(judul = "Tanggal Berakhir", isinya = proyek.tanggalBerakhir)
-            Spacer(modifier = Modifier.padding(5.dp))
-            ComponentDetailProyek(judul = "Status", isinya = proyek.statusProyek)
-        }
-    }
-}
+            HorizontalDivider(
+                thickness = 5.dp,
+                modifier = Modifier.padding(horizontal = 128.dp)
+            )
+            Spacer(Modifier.padding(8.dp))
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    "${proyek.namaProyek}",
+                    fontSize = 42.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "ID : ${proyek.idProyek}",
+                    fontSize = 16.sp,
+                    color = Color.Black
+                )
+            }
+            Spacer(Modifier.padding(8.dp))
+            Text(
+                "${proyek.deskripsiProyek}",
+                fontSize = 24.sp,
+            )
+            Column {
+                Spacer(Modifier.padding(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(horizontalAlignment = Alignment.Start) {
+                        Text(
+                            text = "Tanggal Mulai",
+                            fontSize = 12.sp,
+                            color = Color.Gray
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "${proyek.tanggalMulai}",
+                            fontSize = 16.sp,
+                            color = Color.Black
+                        )
+                    }
 
-@Composable
-fun ComponentDetailProyek(
-    modifier: Modifier = Modifier,
-    judul: String,
-    isinya: String
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.Start
-    ) {
-        Text(
-            text = "$judul:",
-            modifier = modifier
-        )
-        Text(
-            text = isinya,
-        )
+                    Column(horizontalAlignment = Alignment.Start) {
+                        Text(
+                            text = "Tanggal Berakhir",
+                            fontSize = 12.sp,
+                            color = Color.Gray
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "${proyek.tanggalBerakhir}",
+                            fontSize = 16.sp,
+                            color = Color.Black
+                        )
+                    }
+                }
+                Spacer(Modifier.padding(8.dp))
+                Text(
+                    text = "Status",
+                    fontSize = 12.sp,
+                    color = Color.Gray
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "${proyek.statusProyek}",
+                    fontSize = 16.sp,
+                    color = Color.Black
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(
+                    onClick = { onReadTugas(proyek.idProyek.toString()) },
+                    colors = ButtonDefaults.buttonColors(colorResource(id = R.color.primary)),
+                    modifier = Modifier.weight(0.5f)
+                ) {
+                    Text("Lihat Tugas")
+                }
+                Spacer(modifier = Modifier
+                    .padding(8.dp)
+                    .weight(0.1f))
+                Button(
+                    onClick = { onAddTugas(proyek.idProyek.toString()) },
+                    colors = ButtonDefaults.buttonColors(colorResource(id = R.color.primary)),
+                    modifier = Modifier.weight(0.5f)
+                ) {
+                    Text("Tambah Tugas")
+                }
+            }
+        }
     }
 }
