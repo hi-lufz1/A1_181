@@ -73,6 +73,10 @@ fun CustomTopBar(
                     )
                 }
             }
+            else {
+                IconButton(onClick = {}, enabled = false) {
+                }
+            }
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = colorResource(id = R.color.primary),

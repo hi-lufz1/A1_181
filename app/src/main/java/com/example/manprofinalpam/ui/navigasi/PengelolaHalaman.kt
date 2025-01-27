@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.manprofinalpam.ui.view.proyek.DetailProyekScreen
+import com.example.manprofinalpam.ui.view.proyek.InsertProyekScreen
 import com.example.manprofinalpam.ui.view.proyek.ProyekScreen
 import com.example.manprofinalpam.ui.view.proyek.UpdateProyekScreen
 import com.example.manprofinalpam.ui.view.tugas.DetailTugasScreen
@@ -70,6 +71,9 @@ fun PengelolaHalaman(
                     navigateBack = {navController.popBackStack()}
                 )
             }
+        }
+        composable(DesInsertPry.route){
+            InsertProyekScreen(navigateBack = {navController.popBackStack()})
         }
         composable(
             route = DesUpdatePry.routesWithArg, arguments = listOf(

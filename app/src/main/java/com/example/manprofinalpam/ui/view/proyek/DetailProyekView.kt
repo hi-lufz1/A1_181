@@ -183,7 +183,7 @@ fun ItemDetailProyek(
                     colors = ButtonDefaults.buttonColors(colorResource(id = R.color.primary)),
                     modifier = Modifier.weight(0.5f)
                 ) {
-                    Text("Lihat Tugas")
+                    Text("Lihat Tugas",  fontWeight = FontWeight.Bold)
                 }
                 Spacer(modifier = Modifier
                     .padding(8.dp)
@@ -193,7 +193,7 @@ fun ItemDetailProyek(
                     colors = ButtonDefaults.buttonColors(colorResource(id = R.color.primary)),
                     modifier = Modifier.weight(0.5f)
                 ) {
-                    Text("Tambah Tugas")
+                    Text("Tambah Tugas", fontWeight = FontWeight.Bold)
                 }
             }
         }

@@ -10,14 +10,19 @@ import com.example.manprofinalpam.ui.viewmodel.proyek.InsertUiState
 import java.util.Calendar
 import android.os.Build
 import androidx.annotation.RequiresExtension
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.Divider
@@ -38,10 +43,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.manprofinalpam.R
+import com.example.manprofinalpam.ui.customwidget.CustomTopBar
+import com.example.manprofinalpam.ui.viewmodel.proyek.DetailUiState
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -59,24 +70,52 @@ fun InsertProyekScreen(
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            // Custom TopAppBar
-        }
     ) { innerPadding ->
-        ProyekFormBody(
-            insertUiState = viewModel.uiEvent,
-            onProyekValueChange = viewModel::updateInsertPryState,
-            onSaveClick = {
-                coroutineScope.launch {
-                    viewModel.insertPry()
-                    navigateBack()
-                }
-            },
+        Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .fillMaxWidth()
-        )
+                .fillMaxSize()
+                .background(color = colorResource(R.color.primary))
+        ) {
+            Spacer(
+                Modifier
+                    .height(16.dp)
+                    .background(color = colorResource(id = R.color.primary))
+            )
+            CustomTopBar(title = "Tambah Proyek", onEditClick = {
+            }, onBackClick = navigateBack, isEditEnabled = false)
+            Spacer(
+                Modifier
+                    .height(16.dp)
+                    .background(color = colorResource(R.color.primary))
+            )
+
+            Column(  modifier = Modifier
+                .fillMaxSize()
+                .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
+                .background(Color.White)
+                .padding(16.dp)){
+                HorizontalDivider(
+                    thickness = 5.dp,
+                    modifier = Modifier.padding(horizontal = 128.dp)
+                )
+                Spacer(Modifier.padding(8.dp))
+                ProyekFormBody(
+                    insertUiState = viewModel.uiEvent,
+                    onProyekValueChange = viewModel::updateInsertPryState,
+                    onSaveClick = {
+                        coroutineScope.launch {
+                            viewModel.insertPry()
+                            navigateBack()
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .verticalScroll(rememberScrollState())
+                        .fillMaxWidth()
+                )
+            }
+        }
     }
 }
 
@@ -98,10 +137,10 @@ fun ProyekFormBody(
         )
         Button(
             onClick = onSaveClick,
-            shape = MaterialTheme.shapes.small,
+            colors = ButtonDefaults.buttonColors(colorResource(id = R.color.primary)),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Simpan")
+            Text("Simpan", fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -171,7 +210,12 @@ fun ProyekFormInput(
                     val startDate = startMillis?.let { dateFormat.format(it) } ?: ""
                     val endDate = endMillis?.let { dateFormat.format(it) } ?: ""
 
-                    onValueChange(insertUiEvent.copy(tanggalMulai = startDate, tanggalBerakhir = endDate))
+                    onValueChange(
+                        insertUiEvent.copy(
+                            tanggalMulai = startDate,
+                            tanggalBerakhir = endDate
+                        )
+                    )
                     showDateRangePicker = false
                 },
                 onDismiss = { showDateRangePicker = false }
@@ -210,10 +254,10 @@ fun DateRangePickerModal(
 ) {
     val dateRangePickerState = rememberDateRangePickerState()
 
-    DatePickerDialog (
+    DatePickerDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton (
+            TextButton(
                 onClick = {
                     onDateRangeSelected(
                         Pair(
