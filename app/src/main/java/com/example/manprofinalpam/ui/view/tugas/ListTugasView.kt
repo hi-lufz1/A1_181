@@ -224,10 +224,25 @@ fun TugasCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = tugas.deskripsiTugas, style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.weight(0.8f)
-                )
+                Column (modifier = Modifier.weight(0.8f)) {
+                    Text(
+                        text = tugas.deskripsiTugas, style = MaterialTheme.typography.bodyLarge,
+                    )
+                    Row(
+                        modifier = Modifier
+                            .background(
+                                color = colorResource(id = R.color.primary),
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .padding(horizontal = 6.dp)
+                    ) {
+                        Text(
+                            text = "${tugas.namaTim}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White
+                        )
+                    }
+                }
                 IconButton(onClick = { onDeleteClick(tugas) }) {
                     Icon(
                         imageVector = Icons.Default.Delete, contentDescription = null,

@@ -224,15 +224,16 @@ fun ProyekCard(
                         modifier = Modifier
                             .background(
                                 color = colorResource(id = R.color.primary),
-                                shape = RoundedCornerShape(8.dp))
+                                shape = RoundedCornerShape(8.dp)
+                            )
                             .padding(horizontal = 6.dp)
-                            ) {
-                                Text(
-                                    text = "${proyek.tanggalMulai} - ${proyek.tanggalBerakhir}",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = Color.White
-                                )
-                            }
+                    ) {
+                        Text(
+                            text = "${proyek.tanggalMulai} - ${proyek.tanggalBerakhir}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White
+                        )
+                    }
                 }
                 IconButton(onClick = { onDeleteClick(proyek) }) {
                     Icon(
