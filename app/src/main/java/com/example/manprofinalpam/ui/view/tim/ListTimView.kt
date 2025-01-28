@@ -1,4 +1,4 @@
-package com.example.manprofinalpam.ui.view.proyek
+package com.example.manprofinalpam.ui.view.tim
 
 import android.os.Build
 import androidx.annotation.RequiresExtension
@@ -31,32 +31,35 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.manprofinalpam.R
 import com.example.manprofinalpam.model.dataProyek
+import com.example.manprofinalpam.model.dataTim
 import com.example.manprofinalpam.ui.customwidget.BottomBar
 import com.example.manprofinalpam.ui.customwidget.HomeTopAppBar
+import com.example.manprofinalpam.ui.view.proyek.OnError
+import com.example.manprofinalpam.ui.view.proyek.OnLoading
 import com.example.manprofinalpam.ui.viewmodel.PenyediaVM
-import com.example.manprofinalpam.ui.viewmodel.proyek.ListProyekUIState
-import com.example.manprofinalpam.ui.viewmodel.proyek.ListProyekVM
+import com.example.manprofinalpam.ui.viewmodel.tim.ListTimUIState
+import com.example.manprofinalpam.ui.viewmodel.tim.ListTimVM
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @Preview
 @Composable
-fun ProyekScreen(
+fun TimScreen(
     navigateToItemEntry: () -> Unit = {},
     modifier: Modifier = Modifier,
     onDetailClick: (String) -> Unit = {},
-    onTim: () -> Unit = {},
+    onPry: () -> Unit = {},
     onAnggota: () -> Unit = {},
-    viewModel: ListProyekVM = viewModel(factory = PenyediaVM.Factory)
+    viewModel: ListTimVM = viewModel(factory = PenyediaVM.Factory)
 ) {
     Scaffold(
         modifier = modifier,
         topBar = {
             Column {
                 HomeTopAppBar(
-                    title = "Proyek",
-                    onRefreshClick = { viewModel.getPry() },
+                    title = "Tim",
+                    onRefreshClick = { viewModel.getTim() },
                 )
-                if (viewModel.pryUIState is ListProyekUIState.Loading) {
+                if (viewModel.timUIState is ListTimUIState.Loading) {
                     LinearProgressIndicator(
                         color = colorResource(id = R.color.primary),
                         progress = viewModel.currentProgress,
@@ -75,53 +78,45 @@ fun ProyekScreen(
             FloatingActionButton(
                 onClick = navigateToItemEntry,
                 shape = CircleShape,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .size(64.dp),
                 containerColor = colorResource(id = R.color.primary),
                 contentColor = Color.White
             ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Tambah Proyek",
-                    modifier = Modifier.size(32.dp, 32.dp)
-                )
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Tambah Tim")
             }
         },
         bottomBar = {
             BottomBar(
                 modifier = modifier,
-                onTim = { onTim },
+                onProyek = { onPry },
                 onAnggota = { onAnggota },
             )
         }
     ) { innerPadding ->
-        ProyekStatus(
-            uiState = viewModel.pryUIState,
-            retryAction = { viewModel.getPry() },
+        TimStatus(
+            uiState = viewModel.timUIState,
+            retryAction = { viewModel.getTim() },
             modifier = Modifier.padding(innerPadding),
             onDetailClick = onDetailClick,
             onDeleteClick = {
-                viewModel.deletePry(it.idProyek.toString())
-                viewModel.getPry()
+                viewModel.deleteTim(it.idTim.toString())
+                viewModel.getTim()
             }
         )
     }
 }
 
-
 @Composable
-fun ProyekStatus(
-    uiState: ListProyekUIState,
+fun TimStatus(
+    uiState: ListTimUIState,
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
-    onDeleteClick: (dataProyek) -> Unit = {},
-    onDetailClick: (String) -> Unit,
+    onDeleteClick: (dataTim) -> Unit = {},
+    onDetailClick: (String) -> Unit
 ) {
-    var proyekToDelete by remember { mutableStateOf<dataProyek?>(null) }
+    var timToDelete by remember { mutableStateOf<dataTim?>(null) }
 
     when (uiState) {
-        is ListProyekUIState.Loading -> {
+        is ListTimUIState.Loading -> {
             val isLoadingComplete = false
             OnLoading(
                 isLoadingComplete = isLoadingComplete,
@@ -129,49 +124,49 @@ fun ProyekStatus(
             )
         }
 
-        is ListProyekUIState.Success -> if (uiState.proyek.isEmpty()) {
+        is ListTimUIState.Success -> if (uiState.tim.isEmpty()) {
             Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Tidak ada data proyek.")
+                Text("Tidak ada data tim.")
             }
         } else {
-            ProyekLayout(
-                proyek = uiState.proyek,
+            TimLayout(
+                tim = uiState.tim,
                 modifier = modifier,
-                onDetailClick = { onDetailClick(it.idProyek.toString()) },
-                onDeleteClick = { proyekToDelete = it }
+                onDetailClick = { onDetailClick(it.idTim.toString()) },
+                onDeleteClick = { timToDelete = it }
             )
         }
 
-        is ListProyekUIState.Error -> OnError(retryAction, modifier.fillMaxSize())
-    }
-    proyekToDelete?.let { proyek ->
-        DeleteConfirmationDialog(
-            proyek = proyek,
-            onConfirm = {
-                onDeleteClick(proyek)
-                proyekToDelete = null
-            },
-            onDismiss = { proyekToDelete = null }
-        )
+        is ListTimUIState.Error -> OnError(retryAction, modifier.fillMaxSize())
     }
 
+    timToDelete?.let { tim ->
+        DeleteConfirmationDialog(
+            tim = tim,
+            onConfirm = {
+                onDeleteClick(tim)
+                timToDelete = null
+            },
+            onDismiss = { timToDelete = null }
+        )
+    }
 }
 
 @Composable
-fun ProyekLayout(
-    proyek: List<dataProyek>,
+fun TimLayout(
+    tim: List<dataTim>,
     modifier: Modifier = Modifier,
-    onDetailClick: (dataProyek) -> Unit,
-    onDeleteClick: (dataProyek) -> Unit = {}
+    onDetailClick: (dataTim) -> Unit,
+    onDeleteClick: (dataTim) -> Unit = {}
 ) {
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(proyek) { item ->
-            ProyekCard(
-                proyek = item,
+        items(tim) { item ->
+            TimCard(
+                tim = item,
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onDetailClick(item) },
@@ -181,12 +176,11 @@ fun ProyekLayout(
     }
 }
 
-
 @Composable
-fun ProyekCard(
-    proyek: dataProyek,
+fun TimCard(
+    tim: dataTim,
     modifier: Modifier = Modifier,
-    onDeleteClick: (dataProyek) -> Unit = {},
+    onDeleteClick: (dataTim) -> Unit = {}
 ) {
     Card(
         modifier = modifier,
@@ -194,42 +188,17 @@ fun ProyekCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = tim.namaTim, style = MaterialTheme.typography.titleLarge)
+            Spacer(modifier = Modifier.height(8.dp))
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = proyek.namaProyek,
-                    style = MaterialTheme.typography.titleLarge
-                )
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column (  modifier = Modifier.weight(0.8f)){
-                    Text(text = proyek.statusProyek, style = MaterialTheme.typography.bodyLarge)
-                    Row(
-                        modifier = Modifier
-                            .background(
-                                color = colorResource(id = R.color.primary),
-                                shape = RoundedCornerShape(8.dp)
-                            )
-                            .padding(horizontal = 6.dp)
-                    ) {
-                        Text(
-                            text = "${proyek.tanggalMulai} - ${proyek.tanggalBerakhir}",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Color.White
-                        )
-                    }
-                }
-                IconButton(onClick = { onDeleteClick(proyek) }) {
+                Text(text = tim.deskripsiTim, style = MaterialTheme.typography.bodyLarge)
+                IconButton(onClick = { onDeleteClick(tim) }) {
                     Icon(
                         imageVector = Icons.Default.Delete, contentDescription = null,
                         modifier = Modifier.weight(0.2f)
@@ -241,41 +210,8 @@ fun ProyekCard(
 }
 
 @Composable
-fun OnLoading(
-    isLoadingComplete: Boolean,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier.padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(if (isLoadingComplete) "Loading Complete" else "Loading...")
-    }
-}
-
-
-@Composable
-fun OnError(retryAction: () -> Unit, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-//        Image(
-//            painter = painterResource(id = R.drawable.loading), contentDescription = ""
-//        )
-        Text(text = "Terjadi kesalahan.", modifier = Modifier.padding(16.dp))
-        Button(onClick = retryAction) {
-            Text("Coba Lagi")
-        }
-    }
-}
-
-
-@Composable
 fun DeleteConfirmationDialog(
-    proyek: dataProyek,
+    tim: dataTim,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -296,6 +232,6 @@ fun DeleteConfirmationDialog(
             }
         },
         title = { Text("Konfirmasi Hapus") },
-        text = { Text("Apakah Anda yakin ingin menghapus proyek '${proyek.namaProyek}'?") }
+        text = { Text("Apakah Anda yakin ingin menghapus tim '${tim.namaTim}'?") },
     )
 }

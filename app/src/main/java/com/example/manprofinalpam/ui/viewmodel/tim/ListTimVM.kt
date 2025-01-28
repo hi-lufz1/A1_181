@@ -22,7 +22,7 @@ sealed class ListTimUIState {
 class ListTimVM(private val tim: TimRepository) : ViewModel() {
     var timUIState: ListTimUIState by mutableStateOf(ListTimUIState.Loading)
         private set
-
+    var currentProgress by mutableStateOf(0f)
     init {
         getTim()
     }
@@ -31,6 +31,11 @@ class ListTimVM(private val tim: TimRepository) : ViewModel() {
         viewModelScope.launch {
             timUIState = ListTimUIState.Loading
             try {
+                    // Simulate loading delay
+                    for (i in 1..50) {
+                        currentProgress = i / 50f
+                        kotlinx.coroutines.delay(10)
+                    }
                 val data = tim.getTim().data
                 timUIState = ListTimUIState.Success(data)
             } catch (e: Exception) {

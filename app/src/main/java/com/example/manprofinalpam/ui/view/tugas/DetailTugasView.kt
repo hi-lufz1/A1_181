@@ -57,7 +57,7 @@ fun DetailTugasScreen(
                     .height(16.dp)
                     .background(color = colorResource(id = R.color.primary))
             )
-            CustomTopBar(title = "Detail Proyek", onEditClick = {
+            CustomTopBar(title = "Detail Tugas", onEditClick = {
                 onEditClick()
             }, onBackClick = navigateBack, isEditEnabled = true)
             Spacer(
