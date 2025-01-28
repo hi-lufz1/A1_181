@@ -28,7 +28,7 @@ class UpdateTugasVM(
     private val _timList = MutableStateFlow<Map<String, Int?>>(emptyMap())
     val timList = _timList.asStateFlow()
 
-    private val _idTugas: String = checkNotNull(savedStateHandle[DesUpdateTgs.idTgs])
+    val _idTugas: String = checkNotNull(savedStateHandle[DesUpdateTgs.idTgs])
     private var _idProyek: Int = 0
 
     init {

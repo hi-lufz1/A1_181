@@ -24,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -153,7 +154,13 @@ fun TugasFormInput(
 ) {
     val initialTeam =
         teamData.entries.firstOrNull { it.value == insertUiEvent.idTim }?.key.orEmpty()
-    var selectedTeam by remember { mutableStateOf(initialTeam) } //tim yang dipilih
+    var selectedTeam by remember { mutableStateOf(initialTeam) }
+    LaunchedEffect (teamData) {
+        if (teamData.isNotEmpty()) {
+            selectedTeam = teamData.entries.firstOrNull { it.value == insertUiEvent.idTim }?.key.orEmpty()
+            println("Updated selectedTeam: $selectedTeam")
+        }
+    }
     val optionsStatus = listOf("Belum Mulai", "Sedang Berlangsung", "Selesai")
     val optionsPrio = listOf("Tinggi", "Sedang", "Rendah")
 
@@ -164,7 +171,7 @@ fun TugasFormInput(
         Text("Pilih Tim")
         TeamSelector(
             teamData = teamData,
-            selectedTeam = selectedTeam, //Kirim nilai awal
+            selectedTeam = selectedTeam, // Nilai awal
             onTeamSelected = { idTim ->
                 onValueChange(insertUiEvent.copy(idTim = idTim))
                 selectedTeam = teamData.entries.firstOrNull { it.value == idTim }?.key ?: ""
@@ -201,13 +208,6 @@ fun TugasFormInput(
                 Text(text = prio)
             }
         }
-//        CustomOutlinedTextField(
-//            value = insertUiEvent.prioritas,
-//            onValueChange = { onValueChange(insertUiEvent.copy(prioritas = it)) },
-//            modifier = Modifier.fillMaxWidth(),
-//            enabled = enabled,
-//            singleLine = true
-//        )
         Spacer(modifier = Modifier.padding(4.dp))
         Text("Status Tugas")
         optionsStatus.forEach { status ->
@@ -221,13 +221,6 @@ fun TugasFormInput(
                 Text(text = status)
             }
         }
-//         CustomOutlinedTextField(
-//            value = insertUiEvent.statusTugas,
-//            onValueChange = { onValueChange(insertUiEvent.copy(statusTugas = it)) },
-//            modifier = Modifier.fillMaxWidth(),
-//            enabled = enabled,
-//            singleLine = true
-//        )
         if (enabled) {
             Text(
                 text = "Isi Semua Data!",
@@ -254,6 +247,7 @@ fun TeamSelector(
         selectedValue = selectedTeam, // Tampilkan nilai awal
         options = teamNames,
         onValueChangeEvent = { selectedName ->
+            println("Selected Team: $selectedName") // Debug log
             onTeamSelected(teamData[selectedName] ?: 0)
         },
         modifier = Modifier.fillMaxWidth()
