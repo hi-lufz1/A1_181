@@ -145,7 +145,7 @@ fun ItemDetailAnggota(
                     text = anggota.namaAnggota,
                     fontSize = 42.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(0.9f)
+                    modifier = Modifier.weight(0.8f)
                 )
                 Text(
                     text = "ID : ${anggota.idAnggota}",
