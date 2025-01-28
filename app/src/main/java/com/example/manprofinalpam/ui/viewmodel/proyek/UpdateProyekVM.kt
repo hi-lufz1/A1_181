@@ -22,7 +22,7 @@ class UpdateProyekVM(
     var formState: FormState by mutableStateOf(FormState.Idle)
         private set
 
-    private val _idProyek: String = checkNotNull(savedStateHandle[DesUpdatePry.idPry])
+   val _idProyek: String = checkNotNull(savedStateHandle[DesUpdatePry.idPry])
 
     init {
         viewModelScope.launch {

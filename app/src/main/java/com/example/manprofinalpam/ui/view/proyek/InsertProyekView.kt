@@ -139,7 +139,7 @@ fun ProyekFormBody(
     modifier: Modifier = Modifier
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(18.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = modifier.padding(12.dp)
     ) {
         ProyekFormInput(

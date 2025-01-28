@@ -84,7 +84,14 @@ fun PengelolaHalaman(
             val idPry = it.arguments?.getString(DesUpdatePry.idPry)
             idPry?.let { id ->
                 UpdateProyekScreen(
-                    modifier = modifier
+                    modifier = modifier,
+                    navigateBack = {navController.popBackStack()},
+                    navigateBackDetail = { id ->
+                        navController.navigate("${DesDetailPry.route}/$id")
+                        println(
+                            "PengelolaHalaman: ID =  $id"
+                        )
+                    }
                 )
             }
         }
