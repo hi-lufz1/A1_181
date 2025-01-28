@@ -1,5 +1,8 @@
 package com.example.manprofinalpam.ui.viewmodel.anggota
 
+import android.net.http.HttpException
+import android.os.Build
+import androidx.annotation.RequiresExtension
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,6 +13,7 @@ import com.example.manprofinalpam.model.dataAnggota
 import com.example.manprofinalpam.repository.AnggotaRepository
 import com.example.manprofinalpam.ui.navigasi.DesDetailAgt
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 sealed class DetailUiState {
     object Loading : DetailUiState()
@@ -48,6 +52,20 @@ class DetailAnggotaVM(
                 repository.deleteAnggotaFromTim(_idAnggota)
             } catch (e: Exception) {
                 DetailUiState.Error
+            }
+        }
+    }
+
+
+    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
+    fun deleteAgt(idAnggota: String) {
+        viewModelScope.launch {
+            try {
+                repository.deleteAnggota(idAnggota)
+            } catch (e: IOException) {
+                ListAnggotaUIState.Error
+            } catch (e: HttpException) {
+                ListAnggotaUIState.Error
             }
         }
     }
