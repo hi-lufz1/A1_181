@@ -15,6 +15,7 @@ import com.example.manprofinalpam.ui.viewmodel.proyek.InsertProyekVM
 import com.example.manprofinalpam.ui.viewmodel.proyek.ListProyekVM
 import com.example.manprofinalpam.ui.viewmodel.proyek.UpdateProyekVM
 import com.example.manprofinalpam.ui.viewmodel.tim.DetailTimVM
+import com.example.manprofinalpam.ui.viewmodel.tim.InsertTimVM
 import com.example.manprofinalpam.ui.viewmodel.tim.ListTimVM
 import com.example.manprofinalpam.ui.viewmodel.tim.UpdateTimVM
 import com.example.manprofinalpam.ui.viewmodel.tugas.DetailTugasVM
@@ -86,8 +87,7 @@ object PenyediaVM {
 
         //Tim
         initializer {
-            DetailTimVM(
-                createSavedStateHandle(),
+            InsertTimVM(
                 ManageProjectApp().container.timRepository
             )
         }

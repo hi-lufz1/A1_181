@@ -76,10 +76,9 @@ fun InsertProyekScreen(
     viewModel: InsertProyekVM = viewModel(factory = PenyediaVM.Factory)
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier,
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -123,7 +122,6 @@ fun InsertProyekScreen(
                     },
                     modifier = Modifier
                         .padding(innerPadding)
-                        .verticalScroll(rememberScrollState())
                         .fillMaxWidth()
                 )
             }
@@ -141,6 +139,7 @@ fun ProyekFormBody(
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = modifier.padding(12.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         ProyekFormInput(
             insertUiEvent = insertUiState.insertUiEvent,
