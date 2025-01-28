@@ -50,6 +50,7 @@ fun ProyekScreen(
     onProyek: () -> Unit = {},
     viewModel: ListProyekVM = viewModel(factory = PenyediaVM.Factory)
 ) {
+    var navNum by remember { mutableStateOf(0) }
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -93,9 +94,18 @@ fun ProyekScreen(
         bottomBar = {
             BottomBar(
                 modifier = modifier,
+                navNum = navNum, // Kirim nilai navNum sebagai parameter
+                onNavChange = { newNavNum ->
+                    navNum = newNavNum // Perbarui nilai navNum berdasarkan interaksi pengguna
+                    when (newNavNum) {
+                        0 -> onProyek()
+                        1 -> onTim()
+                        2 -> onAnggota()
+                    }
+                },
+                onProyek = onProyek,
                 onTim = onTim,
-                onAnggota = onAnggota,
-                onProyek = onProyek
+                onAnggota = onAnggota
             )
         }
     ) { innerPadding ->

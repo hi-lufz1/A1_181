@@ -47,6 +47,7 @@ fun AnggotaScreen(
     onAgt: () -> Unit = {},
     viewModel: ListAnggotaVM = viewModel(factory = PenyediaVM.Factory)
 ) {
+    var navNum by remember { mutableStateOf(2) } // Default ke "Anggota"
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -89,6 +90,15 @@ fun AnggotaScreen(
         bottomBar = {
             BottomBar(
                 modifier = modifier,
+                navNum = navNum, // Kirim nilai navNum sebagai parameter
+                onNavChange = { newNavNum ->
+                    navNum = newNavNum // Perbarui nilai navNum berdasarkan interaksi pengguna
+                    when (newNavNum) {
+                        0 -> onProyek() // Navigasi ke Proyek
+                        1 -> onTim() // Navigasi ke Tim
+                        2 -> onAgt() // Tetap di Anggota
+                    }
+                },
                 onProyek = onProyek,
                 onTim = onTim,
                 onAnggota = onAgt

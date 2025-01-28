@@ -51,6 +51,7 @@ fun TimScreen(
     onTim: () -> Unit ={},
     viewModel: ListTimVM = viewModel(factory = PenyediaVM.Factory)
 ) {
+    var navNum by remember { mutableStateOf(1) }
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -87,9 +88,18 @@ fun TimScreen(
         bottomBar = {
             BottomBar(
                 modifier = modifier,
+                navNum = navNum, // Kirim nilai navNum sebagai parameter
+                onNavChange = { newNavNum ->
+                    navNum = newNavNum // Perbarui nilai navNum berdasarkan interaksi pengguna
+                    when (newNavNum) {
+                        0 -> onPry() // Navigasi ke Proyek
+                        1 -> onTim() // Navigasi ke Tim
+                        2 -> onAnggota() // Tetap di Anggota
+                    }
+                },
                 onProyek = onPry,
-                onAnggota = onAnggota,
-                onTim = onTim
+                onTim = onTim,
+                onAnggota = onAnggota
             )
         }
     ) { innerPadding ->
