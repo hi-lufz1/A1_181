@@ -22,7 +22,7 @@ sealed class ListAnggotaUIState {
 class ListAnggotaVM(private val agt: AnggotaRepository) : ViewModel() {
     var agtUIState: ListAnggotaUIState by mutableStateOf(ListAnggotaUIState.Loading)
         private set
-
+    var currentProgress by mutableStateOf(0f)
     init {
         getAgt()
     }
@@ -31,6 +31,11 @@ class ListAnggotaVM(private val agt: AnggotaRepository) : ViewModel() {
         viewModelScope.launch {
             agtUIState = ListAnggotaUIState.Loading
             try {
+                // Simulate loading delay
+                for (i in 1..50) {
+                    currentProgress = i / 50f
+                    kotlinx.coroutines.delay(10)
+                }
                 val data = agt.getAnggota().data
                 agtUIState = ListAnggotaUIState.Success(data)
             } catch (e: Exception) {

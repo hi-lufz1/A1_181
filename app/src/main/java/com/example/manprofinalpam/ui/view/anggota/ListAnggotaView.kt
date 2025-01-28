@@ -1,8 +1,7 @@
-package com.example.manprofinalpam.ui.view.proyek
+package com.example.manprofinalpam.ui.view.anggota
 
 import android.os.Build
 import androidx.annotation.RequiresExtension
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,8 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,38 +24,37 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.manprofinalpam.R
-import com.example.manprofinalpam.model.dataProyek
+import com.example.manprofinalpam.model.dataAnggota
 import com.example.manprofinalpam.ui.customwidget.BottomBar
 import com.example.manprofinalpam.ui.customwidget.HomeTopAppBar
 import com.example.manprofinalpam.ui.customwidget.OnError
 import com.example.manprofinalpam.ui.customwidget.OnLoading
 import com.example.manprofinalpam.ui.viewmodel.PenyediaVM
-import com.example.manprofinalpam.ui.viewmodel.proyek.ListProyekUIState
-import com.example.manprofinalpam.ui.viewmodel.proyek.ListProyekVM
+import com.example.manprofinalpam.ui.viewmodel.anggota.ListAnggotaUIState
+import com.example.manprofinalpam.ui.viewmodel.anggota.ListAnggotaVM
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @Preview
 @Composable
-fun ProyekScreen(
+fun AnggotaScreen(
     navigateToItemEntry: () -> Unit = {},
     modifier: Modifier = Modifier,
     onDetailClick: (String) -> Unit = {},
+    onProyek: () -> Unit = {},
     onTim: () -> Unit = {},
-    onAnggota: () -> Unit = {},
-    viewModel: ListProyekVM = viewModel(factory = PenyediaVM.Factory)
+    viewModel: ListAnggotaVM = viewModel(factory = PenyediaVM.Factory)
 ) {
     Scaffold(
         modifier = modifier,
         topBar = {
             Column {
                 HomeTopAppBar(
-                    title = "Proyek",
-                    onRefreshClick = { viewModel.getPry() },
+                    title = "Anggota",
+                    onRefreshClick = { viewModel.getAgt() },
                 )
-                if (viewModel.pryUIState is ListProyekUIState.Loading) {
+                if (viewModel.agtUIState is ListAnggotaUIState.Loading) {
                     LinearProgressIndicator(
                         color = colorResource(id = R.color.primary),
                         progress = viewModel.currentProgress,
@@ -84,8 +80,7 @@ fun ProyekScreen(
                 contentColor = Color.White
             ) {
                 Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Tambah Proyek",
+                    imageVector = Icons.Default.Add, contentDescription = "Tambah Anggota",
                     modifier = Modifier.size(32.dp, 32.dp)
                 )
             }
@@ -93,37 +88,36 @@ fun ProyekScreen(
         bottomBar = {
             BottomBar(
                 modifier = modifier,
+                onProyek = onProyek,
                 onTim = onTim,
-                onAnggota = onAnggota,
             )
         }
     ) { innerPadding ->
-        ProyekStatus(
-            uiState = viewModel.pryUIState,
-            retryAction = { viewModel.getPry() },
+        AnggotaStatus(
+            uiState = viewModel.agtUIState,
+            retryAction = { viewModel.getAgt() },
             modifier = Modifier.padding(innerPadding),
             onDetailClick = onDetailClick,
             onDeleteClick = {
-                viewModel.deletePry(it.idProyek.toString())
-                viewModel.getPry()
+                viewModel.deleteAgt(it.idAnggota.toString())
+                viewModel.getAgt()
             }
         )
     }
 }
 
-
 @Composable
-fun ProyekStatus(
-    uiState: ListProyekUIState,
+fun AnggotaStatus(
+    uiState: ListAnggotaUIState,
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
-    onDeleteClick: (dataProyek) -> Unit = {},
-    onDetailClick: (String) -> Unit,
+    onDeleteClick: (dataAnggota) -> Unit = {},
+    onDetailClick: (String) -> Unit
 ) {
-    var proyekToDelete by remember { mutableStateOf<dataProyek?>(null) }
+    var anggotaToDelete by remember { mutableStateOf<dataAnggota?>(null) }
 
     when (uiState) {
-        is ListProyekUIState.Loading -> {
+        is ListAnggotaUIState.Loading -> {
             val isLoadingComplete = false
             OnLoading(
                 isLoadingComplete = isLoadingComplete,
@@ -131,49 +125,48 @@ fun ProyekStatus(
             )
         }
 
-        is ListProyekUIState.Success -> if (uiState.proyek.isEmpty()) {
+        is ListAnggotaUIState.Success -> if (uiState.anggota.isEmpty()) {
             Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Tidak ada data proyek.")
+                Text("Tidak ada data anggota.")
             }
         } else {
-            ProyekLayout(
-                proyek = uiState.proyek,
+            AnggotaLayout(
+                anggota = uiState.anggota,
                 modifier = modifier,
-                onDetailClick = { onDetailClick(it.idProyek.toString()) },
-                onDeleteClick = { proyekToDelete = it }
+                onDetailClick = { onDetailClick(it.idAnggota.toString()) },
+                onDeleteClick = { anggotaToDelete = it }
             )
         }
 
-        is ListProyekUIState.Error -> OnError(retryAction, modifier.fillMaxSize())
+        is ListAnggotaUIState.Error -> OnError(retryAction, modifier.fillMaxSize())
     }
-    proyekToDelete?.let { proyek ->
+    anggotaToDelete?.let { anggota ->
         DeleteConfirmationDialog(
-            proyek = proyek,
+            anggota = anggota,
             onConfirm = {
-                onDeleteClick(proyek)
-                proyekToDelete = null
+                onDeleteClick(anggota)
+                anggotaToDelete = null
             },
-            onDismiss = { proyekToDelete = null }
+            onDismiss = { anggotaToDelete = null }
         )
     }
-
 }
 
 @Composable
-fun ProyekLayout(
-    proyek: List<dataProyek>,
+fun AnggotaLayout(
+    anggota: List<dataAnggota>,
     modifier: Modifier = Modifier,
-    onDetailClick: (dataProyek) -> Unit,
-    onDeleteClick: (dataProyek) -> Unit = {}
+    onDetailClick: (dataAnggota) -> Unit,
+    onDeleteClick: (dataAnggota) -> Unit = {}
 ) {
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(proyek) { item ->
-            ProyekCard(
-                proyek = item,
+        items(anggota) { item ->
+            AnggotaCard(
+                anggota = item,
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onDetailClick(item) },
@@ -183,12 +176,11 @@ fun ProyekLayout(
     }
 }
 
-
 @Composable
-fun ProyekCard(
-    proyek: dataProyek,
+fun AnggotaCard(
+    anggota: dataAnggota,
     modifier: Modifier = Modifier,
-    onDeleteClick: (dataProyek) -> Unit = {},
+    onDeleteClick: (dataAnggota) -> Unit = {}
 ) {
     Card(
         modifier = modifier,
@@ -196,26 +188,19 @@ fun ProyekCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = proyek.namaProyek,
-                    style = MaterialTheme.typography.titleLarge
-                )
-            }
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = anggota.namaAnggota, style = MaterialTheme.typography.titleLarge)
+            Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(modifier = Modifier.weight(0.8f)) {
-                    Text(text = proyek.statusProyek, style = MaterialTheme.typography.bodyLarge)
+                    Text(
+                        text = anggota.namaTim ?: "", // Jika null, tampilkan string kosong
+                        style = MaterialTheme.typography.bodyLarge
+                    )
                     Row(
                         modifier = Modifier
                             .background(
@@ -225,13 +210,13 @@ fun ProyekCard(
                             .padding(horizontal = 6.dp)
                     ) {
                         Text(
-                            text = "${proyek.tanggalMulai} - ${proyek.tanggalBerakhir}",
+                            text = "${anggota.peran}",
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color.White
                         )
                     }
                 }
-                IconButton(onClick = { onDeleteClick(proyek) }) {
+                IconButton(onClick = { onDeleteClick(anggota) }) {
                     Icon(
                         imageVector = Icons.Default.Delete, contentDescription = null,
                         modifier = Modifier.weight(0.2f)
@@ -243,13 +228,9 @@ fun ProyekCard(
 }
 
 
-
-
-
-
 @Composable
 fun DeleteConfirmationDialog(
-    proyek: dataProyek,
+    anggota: dataAnggota,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -270,6 +251,6 @@ fun DeleteConfirmationDialog(
             }
         },
         title = { Text("Konfirmasi Hapus") },
-        text = { Text("Apakah Anda yakin ingin menghapus proyek '${proyek.namaProyek}'?") }
+        text = { Text("Apakah Anda yakin ingin menghapus '${anggota.namaAnggota}'?") },
     )
 }

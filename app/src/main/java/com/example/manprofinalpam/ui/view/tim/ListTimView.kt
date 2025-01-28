@@ -34,8 +34,8 @@ import com.example.manprofinalpam.model.dataProyek
 import com.example.manprofinalpam.model.dataTim
 import com.example.manprofinalpam.ui.customwidget.BottomBar
 import com.example.manprofinalpam.ui.customwidget.HomeTopAppBar
-import com.example.manprofinalpam.ui.view.proyek.OnError
-import com.example.manprofinalpam.ui.view.proyek.OnLoading
+import com.example.manprofinalpam.ui.customwidget.OnError
+import com.example.manprofinalpam.ui.customwidget.OnLoading
 import com.example.manprofinalpam.ui.viewmodel.PenyediaVM
 import com.example.manprofinalpam.ui.viewmodel.tim.ListTimUIState
 import com.example.manprofinalpam.ui.viewmodel.tim.ListTimVM
