@@ -22,7 +22,7 @@ class UpdateTimVM(
     var formState: FormState by mutableStateOf(FormState.Idle)
         private set
 
-    private val _idTim: String = checkNotNull(savedStateHandle[DesUpdateTim.idTim])
+   val _idTim: String = checkNotNull(savedStateHandle[DesUpdateTim.idTim])
 
     init {
         viewModelScope.launch {
