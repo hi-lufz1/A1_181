@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.manprofinalpam.R
 
@@ -28,7 +29,6 @@ import com.example.manprofinalpam.R
 fun DropDownWidget(
     selectedValue: String,
     options: List<String>,
-    label: String,
     onValueChangeEvent: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -43,13 +43,14 @@ fun DropDownWidget(
             readOnly = true,
             value = selectedValue,
             onValueChange = {},
-            label = { Text(text = label,color = Color.Black, fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
-            ) },
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp) ,
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 containerColor = Color.Transparent,
-                unfocusedBorderColor = Color.Gray,
-                errorBorderColor = Color.Red
+                focusedBorderColor = Color.LightGray,
+                unfocusedBorderColor = Color.LightGray,
+                focusedTextColor = Color.Black,
+                disabledTextColor = Color.Black,
+                disabledBorderColor = Color.LightGray,
             ),textStyle = TextStyle(
                 color = Color.Black, fontWeight = FontWeight.Normal,
                 fontSize = 16.sp
