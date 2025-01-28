@@ -40,14 +40,14 @@ import com.example.manprofinalpam.ui.viewmodel.proyek.ListProyekUIState
 import com.example.manprofinalpam.ui.viewmodel.proyek.ListProyekVM
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
-@Preview
 @Composable
 fun ProyekScreen(
     navigateToItemEntry: () -> Unit = {},
     modifier: Modifier = Modifier,
     onDetailClick: (String) -> Unit = {},
-    onTim: () -> Unit = {},
-    onAnggota: () -> Unit = {},
+    onTim: () -> Unit,
+    onAnggota: () -> Unit,
+    onProyek: () -> Unit = {},
     viewModel: ListProyekVM = viewModel(factory = PenyediaVM.Factory)
 ) {
     Scaffold(
@@ -95,6 +95,7 @@ fun ProyekScreen(
                 modifier = modifier,
                 onTim = onTim,
                 onAnggota = onAnggota,
+                onProyek = onProyek
             )
         }
     ) { innerPadding ->

@@ -41,14 +41,14 @@ import com.example.manprofinalpam.ui.viewmodel.tim.ListTimUIState
 import com.example.manprofinalpam.ui.viewmodel.tim.ListTimVM
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
-@Preview
 @Composable
 fun TimScreen(
     navigateToItemEntry: () -> Unit = {},
     modifier: Modifier = Modifier,
     onDetailClick: (String) -> Unit = {},
-    onPry: () -> Unit = {},
-    onAnggota: () -> Unit = {},
+    onPry: () -> Unit ,
+    onAnggota: () -> Unit,
+    onTim: () -> Unit ={},
     viewModel: ListTimVM = viewModel(factory = PenyediaVM.Factory)
 ) {
     Scaffold(
@@ -87,8 +87,9 @@ fun TimScreen(
         bottomBar = {
             BottomBar(
                 modifier = modifier,
-                onProyek = { onPry },
-                onAnggota = { onAnggota },
+                onProyek = onPry,
+                onAnggota = onAnggota,
+                onTim = onTim
             )
         }
     ) { innerPadding ->

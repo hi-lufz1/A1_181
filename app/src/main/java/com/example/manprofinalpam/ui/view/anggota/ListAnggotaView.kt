@@ -44,6 +44,7 @@ fun AnggotaScreen(
     onDetailClick: (String) -> Unit = {},
     onProyek: () -> Unit = {},
     onTim: () -> Unit = {},
+    onAgt: () -> Unit = {},
     viewModel: ListAnggotaVM = viewModel(factory = PenyediaVM.Factory)
 ) {
     Scaffold(
@@ -90,6 +91,7 @@ fun AnggotaScreen(
                 modifier = modifier,
                 onProyek = onProyek,
                 onTim = onTim,
+                onAnggota = onAgt
             )
         }
     ) { innerPadding ->

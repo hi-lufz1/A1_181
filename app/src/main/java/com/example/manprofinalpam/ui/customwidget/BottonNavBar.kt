@@ -30,13 +30,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.manprofinalpam.R
 
-@Preview
+
 @Composable
 fun BottomBar(
     modifier: Modifier = Modifier,
-    onProyek: () -> Unit = {},
-    onTim: () -> Unit = {},
-    onAnggota: () -> Unit = {},
+    onProyek: () -> Unit ,
+    onTim: () -> Unit ,
+    onAnggota: () -> Unit ,
 ) {
 
     var navNum by remember {
@@ -62,7 +62,7 @@ fun BottomBar(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                IconButton(onClick = { onProyek }) {
+                IconButton(onClick =  onProyek ) {
 
                     Icon(
                         painter = painterResource(id = R.drawable.clipboard_text_fill__streamline_phosphor_fill__1_),
@@ -102,7 +102,7 @@ fun BottomBar(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                IconButton(onClick = { onTim }) {
+                IconButton(onClick = onTim ) {
                     Icon(
                         painter = painterResource(id = R.drawable.multiple_neutral_2__streamline_ultimate),
                         contentDescription = "home",
@@ -141,7 +141,7 @@ fun BottomBar(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                IconButton(onClick = {onAnggota}) {
+                IconButton(onClick = onAnggota) {
                     Icon(
                         painter = painterResource(id = R.drawable.user_filled__streamline_carbon),
                         contentDescription = "home",

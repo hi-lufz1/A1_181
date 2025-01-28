@@ -1,5 +1,6 @@
 package com.example.manprofinalpam
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,15 +18,15 @@ import com.example.manprofinalpam.ui.navigasi.PengelolaHalaman
 import com.example.manprofinalpam.ui.theme.ManProFinalPAMTheme
 
 class MainActivity : ComponentActivity() {
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             ManProFinalPAMTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(modifier = Modifier.fillMaxSize()) {
                     PengelolaHalaman(
-                        modifier = Modifier.padding(innerPadding)
                     )
                 }
             }
