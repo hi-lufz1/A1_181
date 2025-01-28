@@ -1,6 +1,7 @@
 package com.example.manprofinalpam.ui.view.proyek
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -172,29 +173,46 @@ fun ItemDetailProyek(
                     color = Color.Black
                 )
             }
-            Row(
+            Spacer(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Button(
-                    onClick = { onReadTugas(proyek.idProyek.toString()) },
-                    colors = ButtonDefaults.buttonColors(colorResource(id = R.color.primary)),
-                    modifier = Modifier.weight(0.5f)
-                ) {
-                    Text("Lihat Tugas",  fontWeight = FontWeight.Bold)
-                }
-                Spacer(modifier = Modifier
                     .padding(8.dp)
-                    .weight(0.1f))
+            )
+            Column (modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
                 Button(
-                    onClick = { onAddTugas(proyek.idProyek.toString()) },
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { onReadTugas(proyek.idProyek.toString()) },
+
                     colors = ButtonDefaults.buttonColors(colorResource(id = R.color.primary)),
-                    modifier = Modifier.weight(0.5f)
+                    shape = RoundedCornerShape(8.dp)
                 ) {
-                    Text("Tambah Tugas", fontWeight = FontWeight.Bold)
+                    Text("Lihat Tugas", fontWeight = FontWeight.Bold)
                 }
+                Spacer(
+                    modifier = Modifier
+                        .padding(4.dp)
+                )
+
+                Button(
+                    modifier = Modifier.fillMaxWidth().border(
+                        width = 1.dp,
+                        color = colorResource(id = R.color.primary),
+                        shape = RoundedCornerShape(8.dp)
+                    ),
+                    onClick = { onAddTugas(proyek.idProyek.toString()) },
+                    colors = ButtonDefaults.buttonColors(Color.Transparent),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        "Tambah Tugas",
+                        fontWeight = FontWeight.Bold,
+                        color = colorResource(R.color.primary)
+                    )
+
+                }
+                Spacer(
+                    modifier = Modifier
+                        .padding(4.dp)
+                )
             }
         }
     }

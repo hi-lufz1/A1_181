@@ -150,7 +150,8 @@ fun ProyekFormBody(
         Button(
             onClick = onSaveClick,
             colors = ButtonDefaults.buttonColors(colorResource(id = R.color.primary)),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp)
         ) {
             Text("Simpan", fontWeight = FontWeight.Bold)
         }
