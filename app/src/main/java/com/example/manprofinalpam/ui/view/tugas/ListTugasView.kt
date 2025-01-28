@@ -50,23 +50,6 @@ fun TugasScreen(
 ) {
     Scaffold(
         modifier = modifier,
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = navigateToItemEntry,
-                shape = CircleShape,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .size(64.dp),
-                containerColor = colorResource(id = R.color.primary),
-                contentColor = Color.White
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Tambah Tugas",
-                    modifier = Modifier.size(32.dp, 32.dp)
-                )
-            }
-        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -150,7 +133,7 @@ fun TugasStatus(
         is ListTugasUIState.Error -> OnError(retryAction, modifier.fillMaxSize())
     }
     tugasToDelete?.let { tugas ->
-        DeleteConfirmationDialog(
+        DeleteConfirmationDialogTgs(
             tugas = tugas,
             onConfirm = {
                 onDeleteClick(tugas)
@@ -255,7 +238,7 @@ fun TugasCard(
 }
 
 @Composable
-fun DeleteConfirmationDialog(
+fun DeleteConfirmationDialogTgs(
     tugas: dataTugas,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit

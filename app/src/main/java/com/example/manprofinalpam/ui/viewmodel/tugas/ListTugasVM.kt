@@ -23,7 +23,7 @@ sealed class ListTugasUIState {
 
 class ListTugasVM(
     savedStateHandle: SavedStateHandle,
-    private val pry: TugasRepository
+    private val tgs: TugasRepository
 ) : ViewModel() {
     var pryUIState: ListTugasUIState by mutableStateOf(ListTugasUIState.Loading)
         private set
@@ -37,7 +37,7 @@ class ListTugasVM(
         viewModelScope.launch {
             pryUIState = ListTugasUIState.Loading
             try {
-                val data = pry.getTugasByProyek(_idProyek).data
+                val data = tgs.getTugasByProyek(_idProyek).data
                 pryUIState = ListTugasUIState.Success(data)
             } catch (e: Exception) {
                 println("Error loading data tugas: ${e.message}")
@@ -51,7 +51,7 @@ class ListTugasVM(
     fun deleteTgs(idTugas: String) {
         viewModelScope.launch {
             try {
-                pry.deleteTugas(idTugas)
+                tgs.deleteTugas(idTugas)
             } catch (e: IOException) {
                 ListTugasUIState.Error
             } catch (e: HttpException) {
