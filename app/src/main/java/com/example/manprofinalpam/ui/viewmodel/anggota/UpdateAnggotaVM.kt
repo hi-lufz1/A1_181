@@ -28,7 +28,7 @@ class UpdateAnggotaVM(
     private val _timList = MutableStateFlow<Map<String, Int?>>(emptyMap())
     val timList = _timList.asStateFlow()
 
-    private val _idAgt: String = checkNotNull(savedStateHandle[DesUpdateAgt.idAgt])
+   val _idAgt: String = checkNotNull(savedStateHandle[DesUpdateAgt.idAgt])
 
     init {
         getTimList()
