@@ -17,7 +17,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,6 +37,7 @@ import com.example.manprofinalpam.R
 import com.example.manprofinalpam.ui.customwidget.CustomOutlinedTextField
 import com.example.manprofinalpam.ui.customwidget.CustomTopBar
 import com.example.manprofinalpam.ui.viewmodel.PenyediaVM
+import com.example.manprofinalpam.ui.viewmodel.tim.FormState
 import com.example.manprofinalpam.ui.viewmodel.tim.InsertTimUiEvent
 import com.example.manprofinalpam.ui.viewmodel.tim.InsertTimUiState
 import com.example.manprofinalpam.ui.viewmodel.tim.InsertTimVM
@@ -43,10 +50,25 @@ fun InsertTimScreen(
     modifier: Modifier = Modifier,
     viewModel: InsertTimVM = viewModel(factory = PenyediaVM.Factory)
 ) {
+    val snackbarHostState = remember { SnackbarHostState() } // State untuk Snackbar
     val coroutineScope = rememberCoroutineScope()
+    val formState = viewModel.formState // Observe state dari ViewModel
 
-    Scaffold (
+    Scaffold(
         modifier = modifier,
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState
+            ) { snackbarData ->
+                Snackbar(
+                    shape = RoundedCornerShape(8.dp),
+                    snackbarData = snackbarData,
+                    containerColor = colorResource(id = R.color.primary), // Warna latar snackbar
+                    contentColor = Color.White, // Warna teks
+                    actionColor = Color.Yellow // Warna tombol aksi (jika ada)
+                )
+            }
+        },
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -75,10 +97,11 @@ fun InsertTimScreen(
                     .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
                     .background(Color.White)
                     .padding(16.dp)
-            ) { HorizontalDivider(
-                thickness = 5.dp,
-                modifier = Modifier.padding(horizontal = 128.dp)
-            )
+            ) {
+                HorizontalDivider(
+                    thickness = 5.dp,
+                    modifier = Modifier.padding(horizontal = 128.dp)
+                )
                 Spacer(Modifier.padding(8.dp))
                 TimFormBody(
                     insertTimUiState = viewModel.uiEvent,
@@ -86,7 +109,6 @@ fun InsertTimScreen(
                     onSaveClick = {
                         coroutineScope.launch {
                             viewModel.insertTim()
-                            navigateBack()
                         }
                     },
                     modifier = Modifier
@@ -94,6 +116,26 @@ fun InsertTimScreen(
                         .fillMaxWidth(),
                 )
             }
+        }
+    }
+    LaunchedEffect(formState) {
+        when (formState) {
+            is FormState.Success -> {
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar(formState.message,
+                        duration = SnackbarDuration.Short)
+                    navigateBack() // Dipindah setelah snackbar selesai
+                }
+                viewModel.resetSnackBarMessage()
+            }
+            is FormState.Error -> {
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar(formState.message,
+                        duration = SnackbarDuration.Long)
+                }
+                viewModel.resetSnackBarMessage()
+            }
+            else -> {}
         }
     }
 }
@@ -107,7 +149,8 @@ fun TimFormBody(
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(18.dp),
-        modifier = modifier.padding(12.dp)
+        modifier = modifier
+            .padding(12.dp)
             .verticalScroll(rememberScrollState())
     ) {
         TimFormInput(
@@ -125,6 +168,7 @@ fun TimFormBody(
         }
     }
 }
+
 @Composable
 fun TimFormInput(
     insertTimUiEvent: InsertTimUiEvent,

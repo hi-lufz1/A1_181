@@ -21,6 +21,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -46,6 +50,7 @@ import com.example.manprofinalpam.ui.customwidget.CustomOutlinedTextField
 import com.example.manprofinalpam.ui.customwidget.CustomTopBar
 import com.example.manprofinalpam.ui.customwidget.DropDownWidget
 import com.example.manprofinalpam.ui.viewmodel.PenyediaVM
+import com.example.manprofinalpam.ui.viewmodel.tugas.FormState
 import com.example.manprofinalpam.ui.viewmodel.tugas.InsertTugasVM
 import com.example.manprofinalpam.ui.viewmodel.tugas.InsertUiEvent
 import com.example.manprofinalpam.ui.viewmodel.tugas.InsertUiState
@@ -58,12 +63,24 @@ fun InsertTugasScreen(
     navigateBack: () -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: InsertTugasVM = viewModel(factory = PenyediaVM.Factory)
-) {
+) { val snackbarHostState = remember { SnackbarHostState() } // State untuk Snackbar
     val coroutineScope = rememberCoroutineScope()
     val teamData by viewModel.timList.collectAsState()
+    val formState = viewModel.formState // Observe state dari ViewModel
 
     Scaffold(
-        modifier = modifier,
+        modifier = modifier,snackbarHost = {  SnackbarHost(
+            hostState = snackbarHostState
+        ) { snackbarData ->
+            Snackbar(
+                shape = RoundedCornerShape(8.dp),
+                snackbarData = snackbarData,
+                containerColor = colorResource(id = R.color.primary), // Warna latar snackbar
+                contentColor = Color.White, // Warna teks
+                actionColor = Color.Yellow // Warna tombol aksi (jika ada)
+            )
+        }
+        },
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -102,7 +119,6 @@ fun InsertTugasScreen(
                     onSaveClick = {
                         coroutineScope.launch {
                             viewModel.insertTugas()
-                            navigateBack()
                         }
                     },
                     modifier = Modifier
@@ -110,6 +126,27 @@ fun InsertTugasScreen(
                     teamData = teamData
                 )
             }
+        }
+    }
+    // LaunchedEffect untuk menangani perubahan FormState
+    LaunchedEffect(formState) {
+        when (formState) {
+            is FormState.Success -> {
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar(formState.message,
+                        duration = SnackbarDuration.Short)
+                    navigateBack() // Dipindah setelah snackbar selesai
+                }
+                viewModel.resetSnackBarMessage()
+            }
+            is FormState.Error -> {
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar(formState.message,
+                        duration = SnackbarDuration.Long)
+                }
+                viewModel.resetSnackBarMessage()
+            }
+            else -> {}
         }
     }
 }

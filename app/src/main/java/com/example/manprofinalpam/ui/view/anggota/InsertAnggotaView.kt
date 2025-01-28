@@ -40,6 +40,11 @@ import com.example.manprofinalpam.ui.viewmodel.PenyediaVM
 import com.example.manprofinalpam.ui.viewmodel.anggota.InsertAnggotaUiEvent
 import com.example.manprofinalpam.ui.viewmodel.anggota.InsertAnggotaUiState
 import com.example.manprofinalpam.ui.viewmodel.anggota.InsertAnggotaVM
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import com.example.manprofinalpam.ui.viewmodel.anggota.FormState
 import kotlinx.coroutines.launch
 
 @Preview
@@ -49,11 +54,25 @@ fun InsertAnggotaScreen(
     modifier: Modifier = Modifier,
     viewModel: InsertAnggotaVM = viewModel(factory = PenyediaVM.Factory)
 ) {
+    val snackbarHostState = remember { SnackbarHostState() } // State untuk Snackbar
     val coroutineScope = rememberCoroutineScope()
     val teamData by viewModel.timList.collectAsState()
+    val formState = viewModel.formState // Observe state dari ViewModel
 
     Scaffold (
         modifier = modifier,
+        snackbarHost = {  SnackbarHost(
+            hostState = snackbarHostState
+        ) { snackbarData ->
+            Snackbar(
+                shape = RoundedCornerShape(8.dp),
+                snackbarData = snackbarData,
+                containerColor = colorResource(id = R.color.primary), // Warna latar snackbar
+                contentColor = Color.White, // Warna teks
+                actionColor = Color.Yellow // Warna tombol aksi (jika ada)
+            )
+        }
+        },
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -93,7 +112,6 @@ fun InsertAnggotaScreen(
                     onSaveClick = {
                         coroutineScope.launch {
                             viewModel.insertAnggota()
-                            navigateBack()
                         }
                     },
                     modifier = Modifier
@@ -102,6 +120,27 @@ fun InsertAnggotaScreen(
                     teamData = teamData
                 )
             }
+        }
+    }
+    // LaunchedEffect untuk menangani perubahan FormState
+    LaunchedEffect(formState) {
+        when (formState) {
+            is FormState.Success -> {
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar(formState.message,
+                        duration = SnackbarDuration.Short)
+                    navigateBack() // Dipindah setelah snackbar selesai
+                }
+                viewModel.resetSnackBarMessage()
+            }
+            is FormState.Error -> {
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar(formState.message,
+                        duration = SnackbarDuration.Long)
+                }
+                viewModel.resetSnackBarMessage()
+            }
+            else -> {}
         }
     }
 }
