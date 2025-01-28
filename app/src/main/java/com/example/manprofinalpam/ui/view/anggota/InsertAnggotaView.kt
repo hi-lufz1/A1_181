@@ -1,5 +1,4 @@
-package com.example.manprofinalpam.ui.view.tim
-
+package com.example.manprofinalpam.ui.view.anggota
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +17,13 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -30,20 +35,22 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.manprofinalpam.R
 import com.example.manprofinalpam.ui.customwidget.CustomOutlinedTextField
 import com.example.manprofinalpam.ui.customwidget.CustomTopBar
+import com.example.manprofinalpam.ui.customwidget.DropDownWidget
 import com.example.manprofinalpam.ui.viewmodel.PenyediaVM
-import com.example.manprofinalpam.ui.viewmodel.tim.InsertTimUiEvent
-import com.example.manprofinalpam.ui.viewmodel.tim.InsertTimUiState
-import com.example.manprofinalpam.ui.viewmodel.tim.InsertTimVM
+import com.example.manprofinalpam.ui.viewmodel.anggota.InsertAnggotaUiEvent
+import com.example.manprofinalpam.ui.viewmodel.anggota.InsertAnggotaUiState
+import com.example.manprofinalpam.ui.viewmodel.anggota.InsertAnggotaVM
 import kotlinx.coroutines.launch
 
 @Preview
 @Composable
-fun InsertTimScreen(
+fun InsertAnggotaScreen(
     navigateBack: () -> Unit = {},
     modifier: Modifier = Modifier,
-    viewModel: InsertTimVM = viewModel(factory = PenyediaVM.Factory)
+    viewModel: InsertAnggotaVM = viewModel(factory = PenyediaVM.Factory)
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val teamData by viewModel.timList.collectAsState()
 
     Scaffold (
         modifier = modifier,
@@ -60,7 +67,7 @@ fun InsertTimScreen(
                     .background(color = colorResource(id = R.color.primary))
             )
             CustomTopBar(
-                title = "Tambah Tim",
+                title = "Tambah Anggota",
                 onBackClick = navigateBack,
                 isEditEnabled = false
             )
@@ -80,18 +87,19 @@ fun InsertTimScreen(
                 modifier = Modifier.padding(horizontal = 128.dp)
             )
                 Spacer(Modifier.padding(8.dp))
-                TimFormBody(
-                    insertTimUiState = viewModel.uiEvent,
-                    onTimValueChange = viewModel::updateInsertTimState,
+                AnggotaFormBody(
+                    insertAnggotaUiState = viewModel.uiEvent,
+                    onAgtValueChange = viewModel::updateInsertAnggotaState,
                     onSaveClick = {
                         coroutineScope.launch {
-                            viewModel.insertTim()
+                            viewModel.insertAnggota()
                             navigateBack()
                         }
                     },
                     modifier = Modifier
                         .padding(innerPadding)
                         .fillMaxWidth(),
+                    teamData = teamData
                 )
             }
         }
@@ -99,21 +107,23 @@ fun InsertTimScreen(
 }
 
 @Composable
-fun TimFormBody(
-    insertTimUiState: InsertTimUiState,
-    onTimValueChange: (InsertTimUiEvent) -> Unit = {},
+fun AnggotaFormBody(
+    insertAnggotaUiState: InsertAnggotaUiState,
+    onAgtValueChange: (InsertAnggotaUiEvent) -> Unit = {},
     onSaveClick: () -> Unit,
     modifier: Modifier = Modifier,
+    teamData: Map<String, Int?>
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(18.dp),
         modifier = modifier.padding(12.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        TimFormInput(
-            insertTimUiEvent = insertTimUiState.insertTimUiEvent,
-            onValueChange = onTimValueChange,
+        AnggotaFormInput(
+            insertAgtUiEvent = insertAnggotaUiState.insertAnggotaUiEvent,
+            onValueChange = onAgtValueChange,
             modifier = Modifier.fillMaxWidth(),
+            teamData = teamData
         )
         Button(
             onClick = onSaveClick,
@@ -126,44 +136,76 @@ fun TimFormBody(
     }
 }
 @Composable
-fun TimFormInput(
-    insertTimUiEvent: InsertTimUiEvent,
-    onValueChange: (InsertTimUiEvent) -> Unit,
+fun AnggotaFormInput(
+    insertAgtUiEvent: InsertAnggotaUiEvent,
+    onValueChange: (InsertAnggotaUiEvent) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    teamData: Map<String, Int?>
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        Text("Nama Tim")
+    ) {  val initialTeam =
+        teamData.entries.firstOrNull { it.value == insertAgtUiEvent.idTim }?.key.orEmpty()
+        var selectedTeam by remember { mutableStateOf(initialTeam) }
+        LaunchedEffect (teamData) {
+            if (teamData.isNotEmpty()) {
+                selectedTeam = teamData.entries.firstOrNull { it.value == insertAgtUiEvent.idTim }?.key.orEmpty()
+                println("Updated selectedTeam: $selectedTeam")
+            }
+        }
+        Text("Nama Anggota")
         CustomOutlinedTextField(
-            value = insertTimUiEvent.namaTim,
-            onValueChange = { onValueChange(insertTimUiEvent.copy(namaTim = it)) },
+            value = insertAgtUiEvent.namaAnggota,
+            onValueChange = { onValueChange(insertAgtUiEvent.copy(namaAnggota = it)) },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             singleLine = true
         )
         Spacer(modifier = Modifier.padding(4.dp))
-        Text("Deskrisi Tim")
+        Text("Pilih Tim")
+        com.example.manprofinalpam.ui.view.tugas.TeamSelector(
+            teamData = teamData,
+            selectedTeam = selectedTeam, // Nilai awal
+            onTeamSelected = { idTim ->
+                onValueChange(insertAgtUiEvent.copy(idTim = idTim))
+                selectedTeam = teamData.entries.firstOrNull { it.value == idTim }?.key ?: ""
+            }
+        )
+        Spacer(modifier = Modifier.padding(4.dp))
+        Text("Peran")
         CustomOutlinedTextField(
-            value = insertTimUiEvent.deskripsiTim,
-            onValueChange = { onValueChange(insertTimUiEvent.copy(deskripsiTim = it)) },
+            value = insertAgtUiEvent.peran,
+            onValueChange = { onValueChange(insertAgtUiEvent.copy(peran = it)) },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             singleLine = false
         )
-        if (enabled) {
-            Text(
-                text = "Isi Semua Data!",
-                modifier = Modifier.padding(10.dp),
-                color = Color.Red
-            )
-        }
+        Spacer(modifier = Modifier.padding(4.dp))
         HorizontalDivider(
             thickness = 5.dp,
             modifier = Modifier.padding(5.dp)
         )
     }
 
+}
+
+@Composable
+fun TeamSelector(
+    teamData: Map<String, Int?>,
+    selectedTeam: String, //parameter untuk nilai awal
+    onTeamSelected: (Int) -> Unit
+) {
+    val teamNames = teamData.keys.toList()
+
+    DropDownWidget(
+        selectedValue = selectedTeam, // Tampilkan nilai awal
+        options = teamNames,
+        onValueChangeEvent = { selectedName ->
+            println("Selected Team: $selectedName") // Debug log
+            onTeamSelected(teamData[selectedName] ?: 0)
+        },
+        modifier = Modifier.fillMaxWidth()
+    )
 }
