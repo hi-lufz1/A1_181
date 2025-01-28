@@ -28,7 +28,6 @@ class ListTugasVM(
     var pryUIState: ListTugasUIState by mutableStateOf(ListTugasUIState.Loading)
         private set
     private val _idProyek: String = checkNotNull(savedStateHandle[DesListTgs.idPry])
-    var currentProgress by mutableStateOf(0f)
 
     init {
         getTgs()
@@ -37,11 +36,7 @@ class ListTugasVM(
     fun getTgs() {
         viewModelScope.launch {
             pryUIState = ListTugasUIState.Loading
-            try { // Simulate loading delay
-                for (i in 1..50) {
-                    currentProgress = i / 50f
-                    kotlinx.coroutines.delay(10)
-                }
+            try {
                 val data = pry.getTugasByProyek(_idProyek).data
                 pryUIState = ListTugasUIState.Success(data)
             } catch (e: Exception) {

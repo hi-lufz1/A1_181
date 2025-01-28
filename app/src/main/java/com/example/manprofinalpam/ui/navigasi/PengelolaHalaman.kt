@@ -114,7 +114,8 @@ fun PengelolaHalaman(
                         println(
                             "PengelolaHalaman: ID = $idTgs"
                         )
-                    }
+                    },
+                    navigateBack = {navController.popBackStack()}
                 )
             }
         }

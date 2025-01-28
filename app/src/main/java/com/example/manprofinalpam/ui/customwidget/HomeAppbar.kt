@@ -39,7 +39,7 @@ import com.example.manprofinalpam.R
 fun HomeTopAppBar(
     title: String = "",
     onRefreshClick: () -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     TopAppBar(
         modifier = Modifier
@@ -72,7 +72,7 @@ fun HomeTopAppBar(
                     IconButton(onClick = onRefreshClick) {
                         Icon(
                             painter = painterResource(id = R.drawable.sync_fill__streamline_sharp_fill_material),
-                            contentDescription = "Notifications",
+                            contentDescription = "Refresh",
                             tint = Color.Black,
                             modifier = Modifier
                                 .size(26.dp)
