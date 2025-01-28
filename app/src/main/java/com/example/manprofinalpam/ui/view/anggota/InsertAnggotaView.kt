@@ -1,4 +1,5 @@
 package com.example.manprofinalpam.ui.view.anggota
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
@@ -59,19 +60,20 @@ fun InsertAnggotaScreen(
     val teamData by viewModel.timList.collectAsState()
     val formState = viewModel.formState // Observe state dari ViewModel
 
-    Scaffold (
+    Scaffold(
         modifier = modifier,
-        snackbarHost = {  SnackbarHost(
-            hostState = snackbarHostState
-        ) { snackbarData ->
-            Snackbar(
-                shape = RoundedCornerShape(8.dp),
-                snackbarData = snackbarData,
-                containerColor = colorResource(id = R.color.primary), // Warna latar snackbar
-                contentColor = Color.White, // Warna teks
-                actionColor = Color.Yellow // Warna tombol aksi (jika ada)
-            )
-        }
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState
+            ) { snackbarData ->
+                Snackbar(
+                    shape = RoundedCornerShape(8.dp),
+                    snackbarData = snackbarData,
+                    containerColor = colorResource(id = R.color.primary), // Warna latar snackbar
+                    contentColor = Color.White, // Warna teks
+                    actionColor = Color.Yellow // Warna tombol aksi (jika ada)
+                )
+            }
         },
     ) { innerPadding ->
         Column(
@@ -101,10 +103,11 @@ fun InsertAnggotaScreen(
                     .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
                     .background(Color.White)
                     .padding(16.dp)
-            ) { HorizontalDivider(
-                thickness = 5.dp,
-                modifier = Modifier.padding(horizontal = 128.dp)
-            )
+            ) {
+                HorizontalDivider(
+                    thickness = 5.dp,
+                    modifier = Modifier.padding(horizontal = 128.dp)
+                )
                 Spacer(Modifier.padding(8.dp))
                 AnggotaFormBody(
                     insertAnggotaUiState = viewModel.uiEvent,
@@ -127,19 +130,25 @@ fun InsertAnggotaScreen(
         when (formState) {
             is FormState.Success -> {
                 coroutineScope.launch {
-                    snackbarHostState.showSnackbar(formState.message,
-                        duration = SnackbarDuration.Short)
+                    snackbarHostState.showSnackbar(
+                        formState.message,
+                        duration = SnackbarDuration.Short
+                    )
                     navigateBack() // Dipindah setelah snackbar selesai
                 }
                 viewModel.resetSnackBarMessage()
             }
+
             is FormState.Error -> {
                 coroutineScope.launch {
-                    snackbarHostState.showSnackbar(formState.message,
-                        duration = SnackbarDuration.Long)
+                    snackbarHostState.showSnackbar(
+                        formState.message,
+                        duration = SnackbarDuration.Long
+                    )
                 }
                 viewModel.resetSnackBarMessage()
             }
+
             else -> {}
         }
     }
@@ -155,7 +164,8 @@ fun AnggotaFormBody(
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(18.dp),
-        modifier = modifier.padding(12.dp)
+        modifier = modifier
+            .padding(12.dp)
             .verticalScroll(rememberScrollState())
     ) {
         AnggotaFormInput(
@@ -174,6 +184,7 @@ fun AnggotaFormBody(
         }
     }
 }
+
 @Composable
 fun AnggotaFormInput(
     insertAgtUiEvent: InsertAnggotaUiEvent,
@@ -182,18 +193,20 @@ fun AnggotaFormInput(
     enabled: Boolean = true,
     teamData: Map<String, Int?>
 ) {
+    val initialTeam =
+        teamData.entries.firstOrNull { it.value == insertAgtUiEvent.idTim }?.key.orEmpty()
+    var selectedTeam by remember { mutableStateOf(initialTeam) }
+    LaunchedEffect(teamData) {
+        if (teamData.isNotEmpty()) {
+            selectedTeam =
+                teamData.entries.firstOrNull { it.value == insertAgtUiEvent.idTim }?.key.orEmpty()
+            println("Updated selectedTeam: $selectedTeam")
+        }
+    }
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(4.dp)
-    ) {  val initialTeam =
-        teamData.entries.firstOrNull { it.value == insertAgtUiEvent.idTim }?.key.orEmpty()
-        var selectedTeam by remember { mutableStateOf(initialTeam) }
-        LaunchedEffect (teamData) {
-            if (teamData.isNotEmpty()) {
-                selectedTeam = teamData.entries.firstOrNull { it.value == insertAgtUiEvent.idTim }?.key.orEmpty()
-                println("Updated selectedTeam: $selectedTeam")
-            }
-        }
+    ) {
         Text("Nama Anggota")
         CustomOutlinedTextField(
             value = insertAgtUiEvent.namaAnggota,

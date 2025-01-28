@@ -41,7 +41,6 @@ import com.example.manprofinalpam.ui.viewmodel.tugas.ListTugasVM
 @Composable
 @Preview
 fun TugasScreen(
-    navigateToItemEntry: () -> Unit = {},
     modifier: Modifier = Modifier,
     onEditClick: (String) -> Unit = {},
     onDetailClick: (String) -> Unit = {},
