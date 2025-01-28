@@ -42,7 +42,7 @@ class InsertProyekVM(private val pry: ProyekRepository) : ViewModel() {
                 formState = FormState.Loading
                 try {
                     pry.insertProyek(uiEvent.insertUiEvent.toPry())
-                    formState = FormState.Success("Proyek berhasil disimpan")
+                    formState = FormState.Success("Proyek berhasil disimpan",)
                     Log.d("DEBUG", "Menyimpan proyek")
                 } catch (e: Exception) {
                     Log.e("DEBUG", "Gagal menyimpan proyek: ${e.message}")

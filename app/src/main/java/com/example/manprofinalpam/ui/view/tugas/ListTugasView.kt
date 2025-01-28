@@ -15,13 +15,17 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.manprofinalpam.R
 import com.example.manprofinalpam.model.dataTugas
+import com.example.manprofinalpam.ui.customwidget.HomeTopAppBar
 import com.example.manprofinalpam.ui.view.proyek.OnError
 import com.example.manprofinalpam.ui.view.proyek.OnLoading
 import com.example.manprofinalpam.ui.viewmodel.PenyediaVM
+import com.example.manprofinalpam.ui.viewmodel.proyek.ListProyekUIState
 import com.example.manprofinalpam.ui.viewmodel.tugas.ListTugasUIState
 import com.example.manprofinalpam.ui.viewmodel.tugas.ListTugasVM
 
@@ -39,14 +43,25 @@ fun TugasScreen(
     Scaffold(
         modifier = modifier,
         topBar = {
-            TopAppBar(
-                title = { Text("Daftar Tugas") },
-                actions = {
-                    IconButton(onClick = { viewModel.getTgs() }) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
-                    }
+            Column {
+                HomeTopAppBar(
+                    title = "Tugas",
+                    onRefreshClick = { viewModel.getTgs() },
+                )
+                if (viewModel.pryUIState is ListTugasUIState.Loading) {
+                    LinearProgressIndicator(
+                        color = colorResource(id = R.color.primary),
+                        progress = viewModel.currentProgress,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                } else {
+                    LinearProgressIndicator(
+                        color = colorResource(id = R.color.primary),
+                        progress = 1f, // Indikator tetap penuh setelah loading selesai
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
-            )
+            }
         },
         floatingActionButton = {
             FloatingActionButton(

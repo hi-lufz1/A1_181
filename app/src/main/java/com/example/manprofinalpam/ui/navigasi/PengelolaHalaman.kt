@@ -68,12 +68,12 @@ fun PengelolaHalaman(
                         navController.navigate("${DesInsertTgs.route}/$id")
                         println("PengelolaHalaman: ID = $id")
                     },
-                    navigateBack = {navController.popBackStack()}
+                    navigateBack = {navController.navigate(DesListPry.route)}
                 )
             }
         }
         composable(DesInsertPry.route){
-            InsertProyekScreen(navigateBack = {navController.popBackStack()})
+            InsertProyekScreen(navigateBack = {navController.navigate(DesListPry.route)})
         }
         composable(
             route = DesUpdatePry.routesWithArg, arguments = listOf(
