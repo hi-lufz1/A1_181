@@ -192,7 +192,7 @@ fun PengelolaHalaman(
                 },
                 onPry = { navController.navigate(DesListPry.route) },
                 onAnggota = { navController.navigate(DesListAgt.route) },
-                navigateToItemEntry = { navController.navigate(DesListTim.route) }
+                navigateToItemEntry = { navController.navigate(DesInsertTim.route) }
             )
         }
 

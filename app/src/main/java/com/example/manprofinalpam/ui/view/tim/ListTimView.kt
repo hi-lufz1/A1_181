@@ -79,6 +79,9 @@ fun TimScreen(
             FloatingActionButton(
                 onClick = navigateToItemEntry,
                 shape = CircleShape,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .size(64.dp),
                 containerColor = colorResource(id = R.color.primary),
                 contentColor = Color.White
             ) {
