@@ -11,4 +11,20 @@
 |
 
 
+# Tugas 
+| Daftar | Hapus | Hasil |
+|----------|----------|----------|
+| ![image](https://github.com/user-attachments/assets/7b9ba15b-ac04-48f5-bbe3-6aab128655cf) |![image](https://github.com/user-attachments/assets/0ca1cfdc-3750-4214-8bd5-c0451aeb4190)|![image](https://github.com/user-attachments/assets/ca11f461-9ddd-4219-a250-7dd76d5cea45)|
+| Insert |  Input | Hasil |
+|----------|----------|----------|
+|![image](https://github.com/user-attachments/assets/c93b09cf-7c60-41f0-a003-2b13a4b054e0)|![image](https://github.com/user-attachments/assets/a2ddd909-01b6-4481-9e72-55f30f333157)|![image](https://github.com/user-attachments/assets/e5b9d819-ccba-441a-9f3e-89be65edaf03)|
+|Detail| Edit | Hasil | 
+|----------|----------|----------|
+|![image](https://github.com/user-attachments/assets/8454b8cc-aa90-4dd2-a903-9580909a7b03)|![image](https://github.com/user-attachments/assets/c972f1d3-1055-440b-890e-651523b20f87)|![image](https://github.com/user-attachments/assets/0b8f7a74-5f6e-47b9-8018-3269b1b7ccb3)|
+
+
+
+
+
+
 
